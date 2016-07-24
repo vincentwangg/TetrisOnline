@@ -1,0 +1,185 @@
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<HBox fx:controller="com.wangalangg.tetris.controllers.MPController"
+      xmlns:fx="http://javafx.com/fxml" alignment="center"
+      spacing="20"
+      stylesheets="/css/tetris.css"
+>
+
+    <VBox alignment="center">
+        <StackPane>
+            <Rectangle width="96"
+                       height="100"
+                       arcHeight="20"
+                       arcWidth="20"
+                       fill="lightgray"
+            />
+            <VBox alignment="CENTER">
+
+                <Text text="HOLD"
+                      styleClass="play-font, font-25"/>
+
+                <StackPane>
+                    <Rectangle height="60"/>
+                    <ImageView fx:id="holdBlock"/>
+                </StackPane>
+            </VBox>
+        </StackPane>
+
+        <Rectangle height="20"/>
+
+        <StackPane>
+            <Rectangle width="96"
+                       height="96"
+                       arcHeight="20"
+                       arcWidth="20"
+                       fill="lightgray"
+            />
+
+            <VBox alignment="CENTER">
+                <Rectangle height="8"/>
+
+                <StackPane>
+                    <Rectangle height="29"/>
+                    <Text text="LEVEL"
+                          styleClass="play-font, font-25"/>
+                </StackPane>
+
+                <Rectangle height="13"/>
+
+                <StackPane>
+                    <Rectangle height="29"/>
+                    <Text fx:id="level"
+                          styleClass="play-font, font-25"/>
+                </StackPane>
+
+                <Rectangle height="17"/>
+            </VBox>
+        </StackPane>
+
+        <Rectangle height="20"/>
+
+        <StackPane>
+            <Rectangle width="96"
+                       height="96"
+                       arcHeight="20"
+                       arcWidth="20"
+                       fill="lightgray"
+            />
+
+            <VBox alignment="CENTER">
+
+                <Rectangle height="9"/>
+
+                <StackPane>
+                    <Rectangle height="18"/>
+                    <Text text="LINES LEFT"
+                          styleClass="play-font, font-15"/>
+                </StackPane>
+
+                <Rectangle height="18"/>
+
+                <StackPane>
+                    <Rectangle height="29"/>
+                    <Text fx:id="linesLeft"
+                          styleClass="play-font, font-25"/>
+                </StackPane>
+
+                <Rectangle height="22"/>
+            </VBox>
+
+        </StackPane>
+
+        <Rectangle height="20"/>
+
+        <StackPane>
+            <Rectangle width="96"
+                       height="96"
+                       arcHeight="20"
+                       arcWidth="20"
+                       fill="lightgray"
+            />
+
+            <VBox alignment="CENTER">
+
+
+                <Text text="SCORE"
+                      styleClass="play-font, font-25"/>
+
+                <StackPane>
+                    <Rectangle height="55"/>
+                    <Text fx:id="points"
+                          styleClass="play-font, font-25"/>
+                </StackPane>
+            </VBox>
+        </StackPane>
+    </VBox>
+
+    <GridPane fx:id="tetrisGrid"
+              hgap="1"
+              vgap="1"
+              alignment="center"
+              gridLinesVisible="true"/>
+
+    <VBox alignment="center"
+          spacing="10">
+
+        <StackPane>
+            <Rectangle width="96"
+                       height="100"
+                       arcHeight="20"
+                       arcWidth="20"
+                       fill="lightgray"
+            />
+            <VBox alignment="CENTER">
+
+                <Text text="NEXT"
+                      styleClass="play-font, font-25"/>
+
+                <StackPane>
+                    <Rectangle height="60"/>
+                    <ImageView fx:id="block1"/>
+                </StackPane>
+            </VBox>
+        </StackPane>
+
+        <VBox>
+            <StackPane>
+                <Rectangle width="96"
+                           height="384"
+                           arcHeight="20"
+                           arcWidth="20"
+                           fill="lightgray"/>
+                <VBox>
+                    <StackPane>
+                        <Rectangle height="96"/>
+                        <ImageView fx:id="block2"/>
+                    </StackPane>
+                    <StackPane>
+                        <Rectangle height="96"/>
+                        <ImageView fx:id="block3"/>
+                    </StackPane>
+                    <StackPane>
+                        <Rectangle height="96"/>
+                        <ImageView fx:id="block4"/>
+                    </StackPane>
+                    <StackPane>
+                        <Rectangle height="96"/>
+                        <ImageView fx:id="block5"/>
+                    </StackPane>
+                </VBox>
+            </StackPane>
+        </VBox>
+    </VBox>
+
+    <GridPane fx:id="player2Grid"
+              hgap="1"
+              vgap="1"
+              alignment="center"
+              gridLinesVisible="true"/>
+</HBox>

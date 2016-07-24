@@ -1,0 +1,15 @@
+.play-font {
+    -fx-font-family: 'Play';
+}
+
+.font-15 {
+    -fx-font-size: 15;
+}
+
+.font-25 {
+    -fx-font-size: 25;
+}
+
+.font-50 {
+    -fx-font-size: 50;
+}

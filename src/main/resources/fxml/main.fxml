@@ -1,0 +1,32 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.shape.Rectangle?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.wangalangg.tetris.controllers.MainController"
+      stylesheets="/css/tetris.css"
+      alignment="center"
+>
+
+    <Text text="Tetris"
+          styleClass="play-font, font-50"
+    />
+
+    <Rectangle height="50"/>
+
+    <Button text="Marathon (1P)"
+            fx:id="spButton"
+            styleClass="play-font, font-25"
+            prefWidth="400"
+            onAction="#showSinglePlayer"
+    />
+
+    <Rectangle height="30"/>
+
+    <Button text="Online (2P)"
+            fx:id="mpButton"
+            styleClass="play-font, font-25"
+            prefWidth="400"
+            onAction="#showMultiPlayer"
+    />
+</VBox>
