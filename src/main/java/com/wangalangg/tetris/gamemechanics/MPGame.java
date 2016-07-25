@@ -40,7 +40,13 @@ public class MPGame {
 			public void onNewBlock() {
 				socket.emit("newBlock", getNewBlockDataJson());
 			}
+
+			@Override
+			public void onBlockLanded() {
+				socket.emit("blockLanded", getMoveBlockDataJson());
+			}
 		};
+		spGame.pause();
 		p2CurrentBlock = new BlockInfo() {
 			@Override
 			public void blockChanged() {
@@ -63,9 +69,10 @@ public class MPGame {
 	private void configSocket() {
 		socket.on("playerJoinedRoom", args -> {
 
+		}).on("start", args -> {
+			spGame.unpause();
 		}).on("blockMoved", args -> {
 			JSONObject data = (JSONObject) args[0];
-			System.out.println("data: " + "rotation: " + p2CurrentBlock.getRotation());
 			try {
 				p2CurrentBlock.moveTo(data.getInt("row"), data.getInt("col"));
 				p2CurrentBlock.setRotation(data.getInt("rotation"));
@@ -77,8 +84,8 @@ public class MPGame {
 			p2Matrix.getGhostBlock().update();
 			p2Matrix.updateMatrix();
 			p2UIHandler.updateFromSocket();
-			System.out.println("rotation: " + p2CurrentBlock.getRotation());
 		}).on("newBlock", args -> {
+			System.out.println("newBlock");
 			JSONObject data = (JSONObject) args[0];
 			try {
 				p2CurrentBlock.setBlock(Blocks.getBlock(data.getString("block")));
@@ -87,6 +94,20 @@ public class MPGame {
 			}
 
 			p2Matrix.getGhostBlock().update();
+			p2UIHandler.updateFromSocket();
+		}).on("blockLanded", args -> {
+			System.out.println("blockLanded");
+			JSONObject data = (JSONObject) args[0];
+			try {
+				p2CurrentBlock.moveTo(data.getInt("row"), data.getInt("col"));
+				p2CurrentBlock.setRotation(data.getInt("rotation"));
+				p2Matrix.mergeBaseMatrix();
+				p2Matrix.clearLines();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			p2Matrix.updateMatrix();
 			p2UIHandler.updateFromSocket();
 		});
 	}

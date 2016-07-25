@@ -32,7 +32,7 @@ public abstract class SPGame {
 	private Matrix matrix;
 	private BlockInfo currentBlock;
 	private CycleManager gameCycle;
-	private boolean holdUsed = false;
+	private boolean holdUsed = false, isPaused = false;
 	private BlockManager blockManager;
 	private UIHandler uiHandler;
 	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer, softDropTimer;
@@ -60,41 +60,50 @@ public abstract class SPGame {
 		shiftLeftTimer = createShiftTimer(() -> matrix.handleShiftLeft());
 		shiftRightTimer = createShiftTimer(() -> matrix.handleShiftRight());
 		createGameTimer();
-		addBlockToMatrix(blockManager.getCurrentBlock());
 	}
 
 	private void createGameTimer() {
 		new AnimationTimer() {
-			boolean canStepFrame = true;
+			private boolean canStepFrame = true;
+			private boolean isFirstCycle = true;
+
 			@Override
 			public void handle(long now) {
-				// Keep track of game cycle
-				gameCycle.setCurrentTime(now);
+				// Todo make paused pause time in cycleManager also
+				if (!isPaused) {
+					// Keep track of game cycle
+					gameCycle.setCurrentTime(now);
 
-				if (gameCycle.getTimePassed() > LevelInfo.STEP_TIME[score.getLevel() - 1]
-						|| gameCycle.isCycleFinished()) {
-					gameCycle.restartTimer();
-
-					if (matrix.doesCurrentBlockExist()) {
-						canStepFrame = matrix.stepFrame();
+					if (isFirstCycle) {
+						addBlockToMatrix(blockManager.getCurrentBlock());
+						isFirstCycle = false;
 					}
 
-					// If block hit bottom, give 2 cycles for the player to finalize their decision
-					//  or move the piece under other pieces
-					if (matrix.doesCurrentBlockExist()
-							&& !canStepFrame
-							&& restingBlockCounter < 1) {
-						restingBlockCounter++;
-					}
+					if (gameCycle.getTimePassed() > LevelInfo.STEP_TIME[score.getLevel() - 1]
+							|| gameCycle.isCycleFinished()) {
+						gameCycle.restartTimer();
 
-					// Block has fallen
-					else if (matrix.doesCurrentBlockExist()
-							&& !canStepFrame) {
-						onBlockFallen();
+						if (matrix.doesCurrentBlockExist()) {
+							canStepFrame = matrix.stepFrame();
+						}
+
+						// If block hit bottom, give 2 cycles for the player to finalize their decision
+						//  or move the piece under other pieces
+						if (matrix.doesCurrentBlockExist()
+								&& !canStepFrame
+								&& restingBlockCounter < 1) {
+							restingBlockCounter++;
+						}
+
+						// Block has fallen
+						else if (matrix.doesCurrentBlockExist()
+								&& !canStepFrame) {
+							onBlockFallen();
+						}
+						gameCycle.finishCycle();
 					}
-					gameCycle.finishCycle();
+					uiHandler.update();
 				}
-				uiHandler.update();
 			}
 		}.start();
 	}
@@ -202,6 +211,7 @@ public abstract class SPGame {
 	}
 
 	private void onBlockFallen() {
+		onBlockLanded();
 		determinePoints(matrix.onBlockFallen());
 		restingBlockCounter = 0;
 		holdUsed = false;
@@ -255,6 +265,10 @@ public abstract class SPGame {
 				case C:
 				case SHIFT:
 					holdBlock();
+					break;
+				case P:
+					isPaused = !isPaused;
+					break;
 				default:
 					break;
 			}
@@ -303,6 +317,14 @@ public abstract class SPGame {
 		onNewBlock();
 	}
 
+	public void pause() {
+		isPaused = true;
+	}
+
+	public void unpause() {
+		isPaused = false;
+	}
+
 	public JSONObject getMoveBlockDataJson() {
 		// Returns block data in following json format:
 		// 		{
@@ -341,4 +363,6 @@ public abstract class SPGame {
 	public abstract void onBlockMoved();
 
 	public abstract void onNewBlock();
+
+	public abstract void onBlockLanded();
 }

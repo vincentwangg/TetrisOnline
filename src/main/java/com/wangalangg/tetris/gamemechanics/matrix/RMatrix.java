@@ -1,7 +1,5 @@
 package com.wangalangg.tetris.gamemechanics.matrix;
 
-import com.wangalangg.tetris.CycleManager;
-
 /**
  * Receiving matrix. Receives current block positions and updates the matrix. This matrix is
  * 	purely visual
@@ -72,6 +70,43 @@ public class RMatrix {
 
 	public boolean doesCurrentBlockExist() {
 		return currentBlock.doesExist();
+	}
+
+	public int onBlockFallen() {
+		mergeBaseMatrix();
+		return clearLines();
+	}
+
+	/**
+	 * Clears lines if possible
+	 *
+	 * @return number of cleared lines
+	 */
+	public int clearLines() {
+		boolean clearable = true;
+		int clearedLines = 0;
+		// Loop through lines from top to bottom
+		for (int row = 0; row < ACTUAL_ROWS - 1; row++) {
+			// Loop through line
+			for (int col = 1; col < ACTUAL_COLS - 1; col++) {
+				// If the line has a hole in it, set clearable to false
+				if (baseMatrix[row][col] == 0) {
+					clearable = false;
+					break;
+				}
+			}
+			// Clear line if possible and increment clearedLines
+			if (clearable) {
+				for (int i = row; i > 0; i--) {
+					for (int j = ACTUAL_COLS - 2; j > 0; j--) {
+						baseMatrix[i][j] = baseMatrix[i - 1][j];
+					}
+				}
+				clearedLines++;
+			}
+			clearable = true;
+		}
+		return clearedLines;
 	}
 
 	public void mergeBaseMatrix() {

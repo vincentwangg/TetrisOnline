@@ -19,6 +19,17 @@ io.on('connection', function(socket) {
     // Add player to room
     sockets.push(socket.id);
 
+    // Start game after 3 seconds if 2 players in room
+    if (sockets.length == 2) {
+        setTimeout(function() {
+            sockets.forEach(function(socketID) {
+                // Emit block position to other player
+                socket.broadcast.to(socketID).emit("start");
+            });
+            socket.emit("start")
+        }, 3000);
+    }
+
     // On block moved
     socket.on("moveBlock", function(data) {
         console.log(data);
@@ -34,6 +45,15 @@ io.on('connection', function(socket) {
         sockets.forEach(function(socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("newBlock", data);
+        });
+    });
+
+    // On block moved
+    socket.on("blockLanded", function(data) {
+        console.log(data);
+        sockets.forEach(function(socketID) {
+            // Emit block position to other player
+            socket.broadcast.to(socketID).emit("blockLanded", data);
         });
     });
 

@@ -36,6 +36,11 @@ public class SPController implements ScreenChangeable {
 			public void onNewBlock() {
 				// Do nothing once again
 			}
+
+			@Override
+			public void onBlockLanded() {
+				// And anotha one
+			}
 		};
 	}
 
