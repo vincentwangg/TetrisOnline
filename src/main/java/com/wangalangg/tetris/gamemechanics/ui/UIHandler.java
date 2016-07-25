@@ -2,26 +2,39 @@ package com.wangalangg.tetris.gamemechanics.ui;
 
 import com.wangalangg.tetris.gamemechanics.blocks.BlockManager;
 import com.wangalangg.tetris.gamemechanics.matrix.Matrix;
+import com.wangalangg.tetris.gamemechanics.matrix.RMatrix;
 import com.wangalangg.tetris.gamemechanics.matrix.Score;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Shows color and updates images for the player.
+ */
 public class UIHandler {
 
 	private GridPane tetrisGrid;
 	private ImageView holdBlock;
 	private ImageView[] nextBlocks;
 	private ImageLoader imageLoader;
-	private Matrix matrix;
+	private RMatrix matrix;
 	private BlockManager blockManager;
 	private Score score;
+	private boolean isMainPlayer;
 
+	// Constructor for other player matrix UI's
+	public UIHandler(GridPane tetrisGrid, RMatrix matrix) {
+		this(tetrisGrid, null, null, null, matrix, null, null);
+		isMainPlayer = false;
+	}
+
+	// Constructor for main player ui. (UI with the hold block image previews and such)
 	public UIHandler(GridPane tetrisGrid, ImageView holdBlock, ImageLoader imageLoader,
-					 ImageView[] nextBlocks, Matrix matrix, BlockManager blockManager, Score score) {
+					 ImageView[] nextBlocks, RMatrix matrix, BlockManager blockManager, Score score) {
 		this.tetrisGrid = tetrisGrid;
 		this.holdBlock = holdBlock;
 		this.nextBlocks = nextBlocks;
@@ -29,6 +42,7 @@ public class UIHandler {
 		this.matrix = matrix;
 		this.blockManager = blockManager;
 		this.score = score;
+		isMainPlayer = true;
 
 		// Create Tetris area
 		for (int row = 0; row < Matrix.HEIGHT; row++) {
@@ -39,9 +53,15 @@ public class UIHandler {
 	}
 
 	public void update() {
-		updateImageViews();
+		if (isMainPlayer) {
+			updateImageViews();
+			score.update();
+		}
 		updateGridColors();
-		score.update();
+	}
+
+	public void updateFromSocket() {
+		updateGridColorsFromSocket();
 	}
 
 	private void updateImageViews() {
@@ -60,6 +80,20 @@ public class UIHandler {
 				Rectangle rectangle = getRectangleFromGrid(col, row);
 				if (rectangle != null) {
 					rectangle.setFill(getColorFromInt(color));
+				}
+			}
+		}
+	}
+
+	private void updateGridColorsFromSocket() {
+		for (int row = 0; row < Matrix.HEIGHT; row++) {
+			for (int col = 0; col < Matrix.WIDTH; col++) {
+				int color = matrix.getVisualActiveValue(row, col);
+				Rectangle rectangle = getRectangleFromGrid(col, row);
+				if (rectangle != null) {
+					Platform.runLater(() -> {
+						rectangle.setFill(getColorFromInt(color));
+					});
 				}
 			}
 		}

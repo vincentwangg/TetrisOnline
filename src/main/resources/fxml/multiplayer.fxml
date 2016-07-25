@@ -120,7 +120,7 @@
         </StackPane>
     </VBox>
 
-    <GridPane fx:id="tetrisGrid"
+    <GridPane fx:id="player1Grid"
               hgap="1"
               vgap="1"
               alignment="center"

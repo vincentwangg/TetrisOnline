@@ -2,9 +2,9 @@ package com.wangalangg.tetris.gamemechanics.matrix;
 
 class MatrixCollisionHandler {
 
-	private Matrix matrix;
+	private RMatrix matrix;
 
-	MatrixCollisionHandler(Matrix matrix) {
+	MatrixCollisionHandler(RMatrix matrix) {
 		this.matrix = matrix;
 	}
 

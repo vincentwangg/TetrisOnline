@@ -10,6 +10,9 @@ import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
 import com.wangalangg.tetris.gamemechanics.utils.LevelInfo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -24,7 +27,7 @@ import javafx.scene.text.Text;
  * - Keep track of game time
  * - UI control
  */
-public class SPGame {
+public abstract class SPGame {
 
 	private Matrix matrix;
 	private BlockInfo currentBlock;
@@ -40,7 +43,12 @@ public class SPGame {
 				  ImageView[] nextBlocksImages, Text points, Text level, Text linesLeft) {
 		gameCycle = new CycleManager();
 		blockManager = new BlockManager();
-		currentBlock = new BlockInfo();
+		currentBlock = new BlockInfo() {
+			@Override
+			public void blockChanged() {
+				onBlockMoved();
+			}
+		};
 		matrix = new Matrix(currentBlock, gameCycle);
 		this.score = new Score(points, level, linesLeft);
 		uiHandler = new UIHandler(tetrisGrid, holdBlockImage, images, nextBlocksImages,
@@ -292,5 +300,45 @@ public class SPGame {
 		currentBlock.setBlock(block);
 		matrix.getGhostBlock().update();
 		matrix.checkNewBlockInMatrix();
+		onNewBlock();
 	}
+
+	public JSONObject getMoveBlockDataJson() {
+		// Returns block data in following json format:
+		// 		{
+		//			"row": currentBlock.row(),
+		//			"col": currentBlock.col(),
+		//			"rotation": currentBlock.getRotation()
+		//		}
+
+		JSONObject currentBlockData = new JSONObject();
+		try {
+			currentBlockData.put("row", currentBlock.row());
+			currentBlockData.put("col", currentBlock.col());
+			currentBlockData.put("rotation", currentBlock.getRotation());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return currentBlockData;
+	}
+
+	public JSONObject getNewBlockDataJson() {
+		// Returns new block data in the following format:
+		//	{
+		//		"block": currentBlock.getBlock()
+		//	}
+
+		JSONObject newBlockData = new JSONObject();
+		try {
+			newBlockData.put("block", currentBlock.getBlock());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return newBlockData;
+	}
+
+	// Methods that should only be implemented in multiplayer.
+	public abstract void onBlockMoved();
+
+	public abstract void onNewBlock();
 }

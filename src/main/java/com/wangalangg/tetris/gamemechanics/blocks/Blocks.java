@@ -29,4 +29,25 @@ public enum Blocks {
 	public String toString() {
 		return name;
 	}
+
+	public static Blocks getBlock(String blockType) {
+		switch (blockType) {
+			case "I":
+				return I;
+			case "J":
+				return J;
+			case "L":
+				return L;
+			case "O":
+				return O;
+			case "S":
+				return S;
+			case "T":
+				return T;
+			case "Z":
+				return Z;
+			default:
+				throw new IllegalStateException("Blocks: blockType doesn't exist - " + blockType);
+		}
+	}
 }

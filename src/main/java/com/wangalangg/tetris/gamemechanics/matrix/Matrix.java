@@ -9,35 +9,13 @@ import com.wangalangg.tetris.CycleManager;
  * - Handles user input
  * - Add blocks into the matrix
  */
-public class Matrix {
+public class Matrix extends RMatrix {
 
-	public static final int WIDTH = 10, HEIGHT = 20;
-	protected static final int ACTUAL_ROWS = 22, ACTUAL_COLS = 12;
-	protected BlockInfo currentBlock;
-	protected GhostBlock ghostBlock;
-	protected int[][] baseMatrix, activeMatrix;
-	protected MatrixCollisionHandler collisionHandler;
 	private CycleManager cycleManager;
 
 	public Matrix(BlockInfo currentBlock, CycleManager cycleManager) {
-		baseMatrix = new int[ACTUAL_ROWS][ACTUAL_COLS];
-		activeMatrix = new int[ACTUAL_ROWS][ACTUAL_COLS];
-		collisionHandler = new MatrixCollisionHandler(this);
-		padMatrices(activeMatrix, baseMatrix);
-		this.currentBlock = currentBlock;
+		super(currentBlock);
 		this.cycleManager = cycleManager;
-		ghostBlock = new GhostBlock(currentBlock, collisionHandler);
-	}
-
-	private void padMatrices(int[][]... matrix) {
-		for (int[][] m : matrix) {
-			for (int row = 0; row < ACTUAL_ROWS; row++) {
-				m[row][0] = m[row][ACTUAL_COLS - 1] = 99;
-			}
-			for (int col = 0; col < ACTUAL_COLS; col++) {
-				m[ACTUAL_ROWS - 1][col] = 99;
-			}
-		}
 	}
 
 	public boolean checkNewBlockInMatrix() {
@@ -47,41 +25,6 @@ public class Matrix {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Updates values for where the block should be in the matrix
-	 */
-	public void updateMatrix() {
-		for (int row = 1; row < ACTUAL_ROWS - 1; row++) {
-			for (int col = 1; col < ACTUAL_COLS - 1; col++) {
-				activeMatrix[row][col] = baseMatrix[row][col];
-				// Set active value = base value + block value when in the current block matrix
-				if (currentBlock.doesExist() && isInGhostBlock(row, col)) {
-					activeMatrix[row][col] += ghostBlock.blockInfo()
-							.value(row - ghostBlock.blockInfo().row(), col - ghostBlock.blockInfo().col());
-				}
-				if (currentBlock.doesExist()
-						&& isInCurrentBlock(row, col)
-						&& currentBlock.value(row - currentBlock.row(), col - currentBlock.col()) > 0) {
-					activeMatrix[row][col] = currentBlock.value(row - currentBlock.row(), col - currentBlock.col());
-				}
-			}
-		}
-	}
-
-	private boolean isInCurrentBlock(int row, int col) {
-		return row < currentBlock.row() + 4
-				&& row >= currentBlock.row()
-				&& col < currentBlock.col() + 4
-				&& col >= currentBlock.col();
-	}
-
-	private boolean isInGhostBlock(int row, int col) {
-		return row < ghostBlock.blockInfo().row() + 4
-				&& row >= ghostBlock.blockInfo().row()
-				&& col < ghostBlock.blockInfo().col() + 4
-				&& col >= ghostBlock.blockInfo().col();
 	}
 
 	/**
@@ -103,24 +46,6 @@ public class Matrix {
 	public int onBlockFallen() {
 		mergeBaseMatrix();
 		return clearLines();
-	}
-
-	public boolean doesCurrentBlockExist() {
-		return currentBlock.doesExist();
-	}
-
-	public void mergeBaseMatrix() {
-		for (int row = 0; row < 4; row++) {
-			for (int col = 0; col < 4; col++) {
-				// Merge current block into base matrix
-				if (currentBlock.value(row, col) != 0) {
-					baseMatrix[row + currentBlock.row()][col + currentBlock.col()]
-							= currentBlock.value(row, col);
-				}
-			}
-		}
-		currentBlock.takeOutOfPlay();
-		updateMatrix();
 	}
 
 	/**
@@ -155,34 +80,12 @@ public class Matrix {
 		return clearedLines;
 	}
 
-	public int currentBlockVal(int row, int col) {
-		return currentBlock.value(row, col);
-	}
-
-	public GhostBlock getGhostBlock() {
-		return ghostBlock;
-	}
-
-	public int getVisualActiveValue(int row, int col) {
-		return activeMatrix[row + 1][col + 1];
-	}
-
-	public int getVisualBaseValue(int row, int col) {
-		return baseMatrix[row + 1][col + 1];
-	}
-
-	public int getActualActiveValue(int row, int col) {
-		return activeMatrix[row][col];
-	}
-
-	public int getActualBaseValue(int row, int col) {
-		return baseMatrix[row][col];
-	}
-
 	public void handleShiftLeft() {
 		currentBlock.shiftLeft();
 		if (collisionHandler.willCurrentBlockCollide()) {
 			currentBlock.shiftRight();
+		} else {
+			currentBlock.blockChanged();
 		}
 		ghostBlock.update();
 		updateMatrix();
@@ -192,6 +95,8 @@ public class Matrix {
 		currentBlock.shiftRight();
 		if (collisionHandler.willCurrentBlockCollide()) {
 			currentBlock.shiftLeft();
+		} else {
+			currentBlock.blockChanged();
 		}
 		ghostBlock.update();
 		updateMatrix();
@@ -208,7 +113,11 @@ public class Matrix {
 			}
 			if (!testsDidPass) {
 				currentBlock.rotateRight();
+			} else {
+				currentBlock.blockChanged();
 			}
+		} else {
+			currentBlock.blockChanged();
 		}
 		ghostBlock.update();
 		updateMatrix();
@@ -225,7 +134,11 @@ public class Matrix {
 			}
 			if (!testsDidPass) {
 				currentBlock.rotateLeft();
+			} else {
+				currentBlock.blockChanged();
 			}
+		} else {
+			currentBlock.blockChanged();
 		}
 		ghostBlock.update();
 		updateMatrix();
@@ -238,6 +151,7 @@ public class Matrix {
 			lines++;
 		} while (!collisionHandler.willCurrentBlockCollide());
 		currentBlock.shiftUp();
+		currentBlock.blockChanged();
 		lines--;
 		updateMatrix();
 		cycleManager.requestNextCycle();

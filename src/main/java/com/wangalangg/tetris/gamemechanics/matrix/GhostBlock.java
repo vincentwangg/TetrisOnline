@@ -6,7 +6,12 @@ public class GhostBlock {
 	private BlockInfo currentBlock, ghostBlock;
 
 	public GhostBlock(BlockInfo currentBlock, MatrixCollisionHandler collisionHandler) {
-		ghostBlock = new BlockInfo();
+		ghostBlock = new BlockInfo() {
+			@Override
+			public void blockChanged() {
+				// Do nothing
+			}
+		};
 		this.currentBlock = currentBlock;
 		this.collisionHandler = collisionHandler;
 	}

@@ -5,7 +5,7 @@ import com.wangalangg.tetris.gamemechanics.blocks.Blocks;
 /**
  * Row and Column denotes top left coordinate
  */
-public class BlockInfo {
+public abstract class BlockInfo {
 
 	private Blocks block;
 	private int[][] matrix;
@@ -56,6 +56,11 @@ public class BlockInfo {
 		col = savedCol;
 	}
 
+	public void moveTo(int row, int col) {
+		this.row = row;
+		this.col = col;
+	}
+
 	public void shiftBy(int rows, int cols) {
 		row += rows;
 		col += cols;
@@ -81,17 +86,21 @@ public class BlockInfo {
 		return rotation;
 	}
 
+	public void setRotation(int rotation) {
+		this.rotation = rotation;
+	}
+
 	public void rotateLeft() {
 		rotation = (rotation + 3) % 4;
-		update();
+		updateMatrix();
 	}
 
 	public void rotateRight() {
 		rotation = (rotation + 1) % 4;
-		update();
+		updateMatrix();
 	}
 
-	private void update() {
+	public void updateMatrix() {
 		matrix = block.getRotatedMatrix(rotation);
 	}
 
@@ -125,4 +134,6 @@ public class BlockInfo {
 	public boolean doesExist() {
 		return doesExist;
 	}
+
+	public abstract void blockChanged();
 }

@@ -1,5 +1,6 @@
 package com.wangalangg.tetris.ui;
 
+import com.wangalangg.tetris.controllers.MPController;
 import com.wangalangg.tetris.controllers.MainController;
 import com.wangalangg.tetris.controllers.SPController;
 
@@ -37,7 +38,7 @@ public class UIManager {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/multiplayer.fxml"));
 			scene.setRoot(loader.load());
-			SPController controller = loader.getController();
+			MPController controller = loader.getController();
 			controller.setupKeyboardInput(scene);
 
 			stage.setWidth(1000);

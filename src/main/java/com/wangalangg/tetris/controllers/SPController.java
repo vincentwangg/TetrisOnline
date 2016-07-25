@@ -26,7 +26,17 @@ public class SPController implements ScreenChangeable {
 	public void initialize() {
 		ImageView[] blocks = {block1, block2, block3, block4, block5};
 
-		SPGame = new SPGame(tetrisGrid, holdBlock, new ImageLoader(), blocks, points, level, linesLeft);
+		SPGame = new SPGame(tetrisGrid, holdBlock, new ImageLoader(), blocks, points, level, linesLeft) {
+			@Override
+			public void onBlockMoved() {
+				// Do nothing since it's singleplayer. Maybe add sound effects later
+			}
+
+			@Override
+			public void onNewBlock() {
+				// Do nothing once again
+			}
+		};
 	}
 
 	@Override
