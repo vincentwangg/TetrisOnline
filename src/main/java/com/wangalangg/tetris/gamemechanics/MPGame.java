@@ -85,7 +85,6 @@ public class MPGame {
 			p2Matrix.updateMatrix();
 			p2UIHandler.updateFromSocket();
 		}).on("newBlock", args -> {
-			System.out.println("newBlock");
 			JSONObject data = (JSONObject) args[0];
 			try {
 				p2CurrentBlock.setBlock(Blocks.getBlock(data.getString("block")));
@@ -94,9 +93,9 @@ public class MPGame {
 			}
 
 			p2Matrix.getGhostBlock().update();
+			p2Matrix.updateMatrix();
 			p2UIHandler.updateFromSocket();
 		}).on("blockLanded", args -> {
-			System.out.println("blockLanded");
 			JSONObject data = (JSONObject) args[0];
 			try {
 				p2CurrentBlock.moveTo(data.getInt("row"), data.getInt("col"));

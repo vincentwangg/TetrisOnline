@@ -118,7 +118,7 @@ public class Matrix extends RMatrix {
 		currentBlock.blockChanged();
 		lines--;
 		updateMatrix();
-		cycleManager.requestNextCycle();
+		cycleManager.restartTimer();
 		return lines;
 	}
 

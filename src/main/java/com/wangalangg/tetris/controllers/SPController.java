@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 public class SPController implements ScreenChangeable {
 
 	public static final boolean DEBUG = false;
-	protected SPGame SPGame;
+	protected SPGame spGame;
 	protected UIManager uiManager;
 	@FXML protected GridPane tetrisGrid;
 	@FXML protected ImageView holdBlock, block1, block2, block3, block4, block5;
@@ -26,7 +26,7 @@ public class SPController implements ScreenChangeable {
 	public void initialize() {
 		ImageView[] blocks = {block1, block2, block3, block4, block5};
 
-		SPGame = new SPGame(tetrisGrid, holdBlock, new ImageLoader(), blocks, points, level, linesLeft) {
+		spGame = new SPGame(tetrisGrid, holdBlock, new ImageLoader(), blocks, points, level, linesLeft) {
 			@Override
 			public void onBlockMoved() {
 				// Do nothing since it's singleplayer. Maybe add sound effects later
@@ -55,11 +55,11 @@ public class SPController implements ScreenChangeable {
 				System.out.println(evt.getCode());
 				//printMatrices();
 			}
-			SPGame.onPressed(evt.getCode());
+			spGame.onPressed(evt.getCode());
 		});
 
 		scene.setOnKeyReleased(event -> {
-			SPGame.onReleased(event.getCode());
+			spGame.onReleased(event.getCode());
 		});
 	}
 }

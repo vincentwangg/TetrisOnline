@@ -74,13 +74,7 @@ public abstract class SPGame {
 					// Keep track of game cycle
 					gameCycle.setCurrentTime(now);
 
-					if (isFirstCycle) {
-						addBlockToMatrix(blockManager.getCurrentBlock());
-						isFirstCycle = false;
-					}
-
-					if (gameCycle.getTimePassed() > LevelInfo.STEP_TIME[score.getLevel() - 1]
-							|| gameCycle.isCycleFinished()) {
+					if (!isFirstCycle && gameCycle.didTimeExceed(LevelInfo.STEP_TIME[score.getLevel() - 1])) {
 						gameCycle.restartTimer();
 
 						if (matrix.doesCurrentBlockExist()) {
@@ -100,8 +94,14 @@ public abstract class SPGame {
 								&& !canStepFrame) {
 							onBlockFallen();
 						}
-						gameCycle.finishCycle();
 					}
+
+					if (isFirstCycle) {
+						addBlockToMatrix(blockManager.getCurrentBlock());
+						isFirstCycle = false;
+						gameCycle.restartTimer();
+					}
+
 					uiHandler.update();
 				}
 			}

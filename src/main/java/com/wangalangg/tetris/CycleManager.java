@@ -4,11 +4,9 @@ public class CycleManager {
 
 	private long time;
 	private double timePassed;
-	private boolean isCycleFinished;
 
 	public CycleManager() {
 		time = System.nanoTime();
-		isCycleFinished = false;
 	}
 
 	public void setCurrentTime(long currentTime) {
@@ -25,17 +23,5 @@ public class CycleManager {
 
 	public boolean didTimeExceed(double time) {
 		return timePassed > time;
-	}
-
-	public boolean isCycleFinished() {
-		return isCycleFinished;
-	}
-
-	public void requestNextCycle() {
-		isCycleFinished = true;
-	}
-
-	public void finishCycle() {
-		isCycleFinished = false;
 	}
 }
