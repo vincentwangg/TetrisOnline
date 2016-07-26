@@ -4,19 +4,29 @@ import com.wangalangg.tetris.gamemechanics.MPGame;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.ui.UIManager;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
 public class MPController implements ScreenChangeable {
 
 	private MPGame mpGame;
+	private Scene scene;
+	private Runnable quitGameRunnable;
 	protected UIManager uiManager;
-	@FXML private GridPane player1Grid, player2Grid;
-	@FXML protected ImageView holdBlock, block1, block2, block3, block4, block5;
-	@FXML protected Text points, level, linesLeft;
+
+	@FXML
+	private GridPane player1Grid, player2Grid;
+	@FXML
+	protected StackPane pauseGroup;
+	@FXML
+	protected ImageView holdBlock, block1, block2, block3, block4, block5;
+	@FXML
+	protected Text points, level, linesLeft;
 
 	public MPController() {
 	}
@@ -34,6 +44,7 @@ public class MPController implements ScreenChangeable {
 	}
 
 	public void setupKeyboardInput(Scene scene) {
+		this.scene = scene;
 		scene.setOnKeyPressed(evt -> {
 			mpGame.onPressed(evt.getCode());
 		});
@@ -41,5 +52,25 @@ public class MPController implements ScreenChangeable {
 		scene.setOnKeyReleased(event -> {
 			mpGame.onReleased(event.getCode());
 		});
+	}
+
+	public void setQuitGameRunnable(Runnable quitGameRunnable) {
+		this.quitGameRunnable = quitGameRunnable;
+	}
+
+	public void openMenu(ActionEvent event) {
+		// Remove focus from button
+		scene.getRoot().requestFocus();
+		pauseGroup.setVisible(true);
+	}
+
+	public void closeMenu(ActionEvent event) {
+		// Remove focus from button
+		scene.getRoot().requestFocus();
+		pauseGroup.setVisible(false);
+	}
+
+	public void quitGame(ActionEvent event) {
+		quitGameRunnable.run();
 	}
 }

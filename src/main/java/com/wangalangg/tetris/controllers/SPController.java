@@ -26,11 +26,17 @@ public class SPController implements ScreenChangeable {
 	protected Scene scene;
 	protected ImageLoader images;
 	protected Runnable quitGameRunnable;
-	@FXML protected GridPane tetrisGrid;
-	@FXML protected StackPane pauseGroup;
-	@FXML protected ImageView holdBlock, block1, block2, block3, block4, block5;
-	@FXML protected Text points, level, linesLeft;
-	@FXML protected Button menuButton;
+
+	@FXML
+	protected GridPane tetrisGrid;
+	@FXML
+	protected StackPane pauseGroup;
+	@FXML
+	protected ImageView holdBlock, block1, block2, block3, block4, block5;
+	@FXML
+	protected Text points, level, linesLeft;
+	@FXML
+	protected Button menuButton;
 
 	public SPController() {
 		images = new ImageLoader();
@@ -87,7 +93,7 @@ public class SPController implements ScreenChangeable {
 		spGame.pause();
 	}
 
-	public void closeMenu(Event event) {
+	public void closeMenu(ActionEvent event) {
 		// Remove focus from button
 		scene.getRoot().requestFocus();
 		pauseGroup.setVisible(false);

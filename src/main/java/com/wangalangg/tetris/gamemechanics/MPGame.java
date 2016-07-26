@@ -65,6 +65,14 @@ public class MPGame {
 		spGame.onReleased(input);
 	}
 
+	public void pause() {
+		spGame.pause();
+	}
+
+	public void unpause() {
+		spGame.unpause();
+	}
+
 	private void configSocket() {
 		socket.on("playerJoinedRoom", args -> {
 

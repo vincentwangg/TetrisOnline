@@ -41,6 +41,7 @@ public class UIManager {
 			scene.setRoot(loader.load());
 			MPController controller = loader.getController();
 			controller.setupKeyboardInput(scene);
+			controller.setQuitGameRunnable(this::showMainMenu);
 
 			stage.setWidth(1000);
 			stage.setHeight(800);
