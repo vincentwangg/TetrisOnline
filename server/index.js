@@ -2,7 +2,11 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var jsonfile = require('jsonfile');
-var rooms = [false, false, false, false, false];
+var rooms = [];
+
+for (var i = 0; i < 1; i++) {
+    rooms.push(false);
+}
 
 // Server start
 server.listen(8080, function () {
@@ -25,18 +29,22 @@ io.on('connection', function (socket) {
 
         var roomNum;
         do {
+            console.log("damn");
+            // If rooms all get occupied, generate 100 more rooms
+            if (areAllRoomsOccupied()) {
+                for (var i = 0; i < 10; i++) {
+                    rooms.push(false);
+                }
+            }
+
             // Create random room number
             roomNum = getRandomInt(0, rooms.length - 1);
-
-            if (areAllRoomsOccupied()) {
-                // todo double the array length
-            }
         } while (rooms[roomNum]);
 
         writeFile(roomNum, roomData);
         rooms[roomNum] = true;
         roomID = roomNum;
-        console.log(roomNum.toString());
+        console.log(rooms);
     });
 
     socket.on("joinRoom", function (data, ack) {
@@ -144,9 +152,10 @@ function getRandomInt(min, max) {
 }
 
 function areAllRoomsOccupied() {
-    rooms.forEach(function(isOccupied) {
-        if (!isOccupied) {
+    for (var i = 0; i < rooms.length; i++) {
+        if (!rooms[i]) {
             return false;
         }
-    })
+    }
+    return true;
 }
