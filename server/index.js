@@ -2,7 +2,7 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var jsonfile = require('jsonfile');
-var rooms = [0, 0, 0, 0, 0];
+var rooms = [false, false, false, false, false];
 
 // Server start
 server.listen(8080, function () {
@@ -22,9 +22,21 @@ io.on('connection', function (socket) {
         // Create room data
         var roomData = {password: "", players: [socket.id], ready: 0};
         players.push(socket.id);
-        writeFile(0, roomData);
-        rooms[0] = 1;
-        roomID = 0;
+
+        var roomNum;
+        do {
+            // Create random room number
+            roomNum = getRandomInt(0, rooms.length - 1);
+
+            if (areAllRoomsOccupied()) {
+                // todo double the array length
+            }
+        } while (rooms[roomNum]);
+
+        writeFile(roomNum, roomData);
+        rooms[roomNum] = true;
+        roomID = roomNum;
+        console.log(roomNum.toString());
     });
 
     socket.on("joinRoom", function (data, ack) {
@@ -32,38 +44,37 @@ io.on('connection', function (socket) {
         //  { roomID : 3 }
 
         // Make sure room is open
-        ack(true);
-        //if (rooms[data.roomID] == 1) {
-        // Add socket id to players and push
-        jsonfile.readFile(getRoomFileName(data.roomID), function (err, roomData) {
-            // Check to see if room is full or not
-            if (roomData.players.length < 2) {
-                // Set socket variables
-                roomID = data.roomID;
+        if (rooms[data.roomID]) {
+            // Add socket id to players and push
+            jsonfile.readFile(getRoomFileName(data.roomID), function (err, roomData) {
+                // Check to see if room is full or not
+                if (roomData.players.length < 2) {
+                    // Set socket variables
+                    roomID = data.roomID;
 
-                // Let client know they joined the room successfully
-                ack(true);
+                    // Let client know they joined the room successfully
+                    ack(true);
 
-                // Broadcast to everyone that a player joined the room
-                roomData.players.forEach(function(player) {
-                    socket.broadcast.to(player).emit("playerJoinedRoom", { socketID : socket.id });
-                });
+                    // Broadcast to everyone that a player joined the room
+                    roomData.players.forEach(function (player) {
+                        socket.broadcast.to(player).emit("playerJoinedRoom", {socketID: socket.id});
+                    });
 
-                // Add player to room json and write to file
-                roomData.players.push(socket.id);
+                    // Add player to room json and write to file
+                    roomData.players.push(socket.id);
 
-                players = roomData.players;
+                    players = roomData.players;
 
-                writeFile(data.roomID, roomData);
-            } else {
-                // If not, emit room full event
-                socket.emit("roomFull");
-            }
-        });
-        //} else {
-        //    // If not, emit roomNull event
-        //    socket.emit("roomNull");
-        //}
+                    writeFile(data.roomID, roomData);
+                } else {
+                    // If not, emit room full event
+                    socket.emit("roomFull");
+                }
+            });
+        } else {
+            // If not, emit roomNull event
+            socket.emit("roomNull");
+        }
     });
 
     socket.on("ready", function () {
@@ -84,7 +95,7 @@ io.on('connection', function (socket) {
         });
     });
 
-    socket.on("playerJoinedRoom", function(data) {
+    socket.on("playerJoinedRoom", function (data) {
         players.push(data.socketID);
     });
 
@@ -119,15 +130,23 @@ io.on('connection', function (socket) {
     });
 });
 
-function createRoom(roomID) {
-    // Generate random int
-
-}
-
 function getRoomFileName(roomID) {
     return "./server/rooms/" + roomID.toString() + ".json";
 }
 
 function writeFile(roomID, data) {
-    jsonfile.writeFile(getRoomFileName(roomID), data, function (err) {});
+    jsonfile.writeFile(getRoomFileName(roomID), data, function (err) {
+    });
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function areAllRoomsOccupied() {
+    rooms.forEach(function(isOccupied) {
+        if (!isOccupied) {
+            return false;
+        }
+    })
 }

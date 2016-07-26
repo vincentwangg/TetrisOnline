@@ -77,7 +77,8 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 
 	private void configSocket() {
 		// todo finish this
-		//socket.on("roomFull")
-		socket.on("playerJoinedRoom", args -> socket.emit("playerJoinedRoom", (JSONObject) args[0]));
+		socket.on("playerJoinedRoom", args -> socket.emit("playerJoinedRoom", (JSONObject) args[0]))
+				.on("roomFull", args -> System.out.println("room full"))
+				.on("roomNull", args -> System.out.println("room null"));
 	}
 }
