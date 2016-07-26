@@ -50,6 +50,7 @@ public class MPController implements ScreenChangeable {
 
 	public void configScene(Scene scene) {
 		this.scene = scene;
+		scene.getRoot().requestFocus();
 		scene.setOnKeyPressed(evt -> {
 			mpGame.onPressed(evt.getCode());
 		});

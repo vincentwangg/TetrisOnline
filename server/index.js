@@ -12,6 +12,7 @@ server.listen(8080, function () {
 // Individual player connection
 io.on('connection', function (socket) {
     var roomID = -1;
+    var players = [];
 
     // Indicates Player connected to server
     console.log("Player Connected!");
@@ -20,10 +21,10 @@ io.on('connection', function (socket) {
     socket.on("createRoom", function () {
         // Create room data
         var roomData = {password: "", players: [socket.id], ready: 0};
+        players.push(socket.id);
         writeFile(0, roomData);
         rooms[0] = 1;
         roomID = 0;
-        console.log("createRoom")
     });
 
     socket.on("joinRoom", function (data, ack) {
@@ -37,9 +38,22 @@ io.on('connection', function (socket) {
         jsonfile.readFile(getRoomFileName(data.roomID), function (err, roomData) {
             // Check to see if room is full or not
             if (roomData.players.length < 2) {
-                roomData.players.push(socket.id);
+                // Set socket variables
                 roomID = data.roomID;
+
+                // Let client know they joined the room successfully
                 ack(true);
+
+                // Broadcast to everyone that a player joined the room
+                roomData.players.forEach(function(player) {
+                    socket.broadcast.to(player).emit("playerJoinedRoom", { socketID : socket.id });
+                });
+
+                // Add player to room json and write to file
+                roomData.players.push(socket.id);
+
+                players = roomData.players;
+
                 writeFile(data.roomID, roomData);
             } else {
                 // If not, emit room full event
@@ -47,8 +61,8 @@ io.on('connection', function (socket) {
             }
         });
         //} else {
-        //    // If not, emit failedJoinRoom event
-        //    socket.emit("failedJoinRoom");
+        //    // If not, emit roomNull event
+        //    socket.emit("roomNull");
         //}
     });
 
@@ -64,34 +78,35 @@ io.on('connection', function (socket) {
                         // Emit block position to other player
                         socket.broadcast.to(socketID).emit("start");
                     });
-                    socket.emit("start")
+                    socket.emit("start");
                 }, 3000);
             }
         });
     });
 
-    // Broadcast to every in room that player joined TODO make rooms, not broadcast
-    socket.broadcast.emit("playerJoinedRoom");
+    socket.on("playerJoinedRoom", function(data) {
+        players.push(data.socketID);
+    });
 
     // On block moved
     socket.on("moveBlock", function (data) {
-        sockets.forEach(function (socketID) {
+        players.forEach(function (socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("blockMoved", data);
         });
     });
 
-    // On block moved
+    // On new block
     socket.on("newBlock", function (data) {
-        sockets.forEach(function (socketID) {
+        players.forEach(function (socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("newBlock", data);
         });
     });
 
-    // On block moved
+    // On block landed
     socket.on("blockLanded", function (data) {
-        sockets.forEach(function (socketID) {
+        players.forEach(function (socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("blockLanded", data);
         });
@@ -114,7 +129,5 @@ function getRoomFileName(roomID) {
 }
 
 function writeFile(roomID, data) {
-    jsonfile.writeFile(getRoomFileName(roomID), data, function (err) {
-        console.log(err);
-    });
+    jsonfile.writeFile(getRoomFileName(roomID), data, function (err) {});
 }

@@ -43,7 +43,6 @@ public class UIManager {
 	public void showMultiPlayer() {
 		// Make sure currentController is room selection
 		if (currentController instanceof RoomSelectionCtrller) {
-			System.out.println("changing screen");
 			Socket socket = ((RoomSelectionCtrller) currentController).getSocket();
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/multiplayer.fxml"));

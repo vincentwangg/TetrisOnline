@@ -63,10 +63,7 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 			e.printStackTrace();
 		}
 		JSONObject[] data = {room};
-		socket.emit("joinRoom", data, args -> {
-			System.out.println("hello");
-			Platform.runLater(() -> uiManager.showMultiPlayer());
-		});
+		socket.emit("joinRoom", data, args -> Platform.runLater(() -> uiManager.showMultiPlayer()));
 	}
 
 	private void connectSocket() {
@@ -81,5 +78,6 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 	private void configSocket() {
 		// todo finish this
 		//socket.on("roomFull")
+		socket.on("playerJoinedRoom", args -> socket.emit("playerJoinedRoom", (JSONObject) args[0]));
 	}
 }
