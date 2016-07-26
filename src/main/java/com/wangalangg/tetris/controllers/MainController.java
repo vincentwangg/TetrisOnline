@@ -20,4 +20,8 @@ public class MainController implements ScreenChangeable {
 	public void showMultiPlayer(ActionEvent event) {
 		uiManager.showMultiPlayer();
 	}
+
+	public void showRoomSelection(ActionEvent event) {
+		uiManager.showRoomSelection();
+	}
 }

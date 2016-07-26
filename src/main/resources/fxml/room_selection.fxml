@@ -1,0 +1,61 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.wangalangg.tetris.controllers.RoomSelectionCtrller"
+      stylesheets="/css/tetris.css"
+      spacing="20"
+      alignment="CENTER"
+>
+
+    <Text text="Create or Join Room"
+          styleClass="play-font, font-25"
+    />
+
+    <HBox alignment="CENTER"
+          spacing="20"
+    >
+        <StackPane>
+            <Rectangle width="200"/>
+            <VBox alignment="CENTER"
+                  spacing="50"
+            >
+                <Text text="Create Room"
+                      styleClass="play-font, font-25"
+                />
+                <Button text="Create"
+                        styleClass="play-font, font-25"
+                        onAction="#createRoom"
+                />
+            </VBox>
+        </StackPane>
+        <Rectangle width="1"
+                   height="200"
+                   fill="GRAY"
+        />
+        <StackPane>
+            <Rectangle width="200"/>
+            <VBox alignment="CENTER"
+                  spacing="20"
+            >
+                <Text text="Join Room"
+                      styleClass="play-font, font-25"
+                />
+                <TextField fx:id="roomNumField"
+                           promptText="Room #"
+                           prefWidth="100"
+                           styleClass="play-font, font-25"
+                />
+                <Button text="Join"
+                        styleClass="play-font, font-25"
+                        onAction="#joinRoom"
+                />
+            </VBox>
+        </StackPane>
+    </HBox>
+
+</VBox>

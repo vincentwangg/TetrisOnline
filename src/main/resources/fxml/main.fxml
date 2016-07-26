@@ -15,7 +15,6 @@
     <Rectangle height="50"/>
 
     <Button text="Marathon (1P)"
-            fx:id="spButton"
             styleClass="play-font, font-25"
             prefWidth="400"
             onAction="#showSinglePlayer"
@@ -24,9 +23,8 @@
     <Rectangle height="30"/>
 
     <Button text="Online (2P)"
-            fx:id="mpButton"
             styleClass="play-font, font-25"
             prefWidth="400"
-            onAction="#showMultiPlayer"
+            onAction="#showRoomSelection"
     />
 </VBox>

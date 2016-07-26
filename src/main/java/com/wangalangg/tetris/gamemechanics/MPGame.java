@@ -28,8 +28,6 @@ public class MPGame {
 
 	public MPGame(GridPane p1Grid, GridPane p2Grid, ImageView holdBlock, ImageLoader imageLoader,
 				  ImageView[] blocks, Text points, Text level, Text linesLeft) {
-		connectSocket();
-		configSocket();
 		spGame = new SPGame(p1Grid, holdBlock, imageLoader, blocks, points, level, linesLeft) {
 			@Override
 			public void onBlockMoved() {
@@ -55,6 +53,12 @@ public class MPGame {
 		};
 		p2Matrix = new RMatrix(p2CurrentBlock);
 		p2UIHandler = new UIHandler(p2Grid, p2Matrix);
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+		configSocket();
+		socket.emit("ready");
 	}
 
 	public void onPressed(KeyCode input) {
@@ -116,14 +120,5 @@ public class MPGame {
 			p2Matrix.updateMatrix();
 			p2UIHandler.updateFromSocket();
 		});
-	}
-
-	private void connectSocket() {
-		try {
-			socket = IO.socket("http://localhost:8080");
-			socket.connect();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
 	}
 }
