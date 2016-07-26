@@ -32,7 +32,6 @@ io.on('connection', function(socket) {
 
     // On block moved
     socket.on("moveBlock", function(data) {
-        console.log(data);
         sockets.forEach(function(socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("blockMoved", data);
@@ -41,7 +40,6 @@ io.on('connection', function(socket) {
 
     // On block moved
     socket.on("newBlock", function(data) {
-        console.log(data);
         sockets.forEach(function(socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("newBlock", data);
@@ -50,7 +48,6 @@ io.on('connection', function(socket) {
 
     // On block moved
     socket.on("blockLanded", function(data) {
-        console.log(data);
         sockets.forEach(function(socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("blockLanded", data);

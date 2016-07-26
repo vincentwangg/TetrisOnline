@@ -4,29 +4,43 @@ import com.wangalangg.tetris.gamemechanics.SPGame;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.ui.UIManager;
 
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class SPController implements ScreenChangeable {
 
-	public static final boolean DEBUG = false;
 	protected SPGame spGame;
 	protected UIManager uiManager;
+	protected Scene scene;
+	protected ImageLoader images;
+	protected Runnable quitGameRunnable;
 	@FXML protected GridPane tetrisGrid;
+	@FXML protected StackPane pauseGroup;
 	@FXML protected ImageView holdBlock, block1, block2, block3, block4, block5;
 	@FXML protected Text points, level, linesLeft;
+	@FXML protected Button menuButton;
 
 	public SPController() {
+		images = new ImageLoader();
 	}
 
 	@FXML
 	public void initialize() {
 		ImageView[] blocks = {block1, block2, block3, block4, block5};
 
-		spGame = new SPGame(tetrisGrid, holdBlock, new ImageLoader(), blocks, points, level, linesLeft) {
+		spGame = new SPGame(tetrisGrid, holdBlock, images, blocks, points, level, linesLeft) {
 			@Override
 			public void onBlockMoved() {
 				// Do nothing since it's singleplayer. Maybe add sound effects later
@@ -49,17 +63,38 @@ public class SPController implements ScreenChangeable {
 		this.uiManager = uiManager;
 	}
 
-	public void setupKeyboardInput(Scene scene) {
+	public void configScene(Scene scene) {
+		this.scene = scene;
+		scene.getRoot().requestFocus();
 		scene.setOnKeyPressed(evt -> {
-			if (DEBUG) {
-				System.out.println(evt.getCode());
-				//printMatrices();
-			}
 			spGame.onPressed(evt.getCode());
+			System.out.println(evt.getCode());
 		});
 
 		scene.setOnKeyReleased(event -> {
 			spGame.onReleased(event.getCode());
 		});
+	}
+
+	public void setQuitGameRunnable(Runnable quitGameRunnable) {
+		this.quitGameRunnable = quitGameRunnable;
+	}
+
+	public void openMenu(ActionEvent event) {
+		// Remove focus from button
+		scene.getRoot().requestFocus();
+		pauseGroup.setVisible(true);
+		spGame.pause();
+	}
+
+	public void closeMenu(Event event) {
+		// Remove focus from button
+		scene.getRoot().requestFocus();
+		pauseGroup.setVisible(false);
+		spGame.unpause();
+	}
+
+	public void quitGame(ActionEvent event) {
+		quitGameRunnable.run();
 	}
 }

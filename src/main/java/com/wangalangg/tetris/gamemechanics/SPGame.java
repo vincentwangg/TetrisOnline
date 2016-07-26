@@ -115,7 +115,10 @@ public abstract class SPGame {
 
 			@Override
 			public void handle(long now) {
+				if (isPaused) stop();
+
 				shiftCycle.setCurrentTime(now);
+
 				// Process is done backwards to ensure everything runs once
 				//  e.g. if shifted first, isFirstShift will become false, making delay2Secs
 				//       method run, making isSecondShift true, making the shiftEvery1Sec run,
@@ -137,6 +140,7 @@ public abstract class SPGame {
 				shiftCycle.restartTimer();
 				action.run();
 				gameCycle.restartTimer();
+				// todo if user holds down, next cycle will never come and points will keep going up
 				score.softDrop();
 			}
 		};
@@ -150,6 +154,8 @@ public abstract class SPGame {
 
 			@Override
 			public void handle(long now) {
+				if (isPaused) stop();
+
 				shiftCycle.setCurrentTime(now);
 				// Process is done backwards to ensure everything runs once
 				//  e.g. if shifted first, isFirstShift will become false, making delay2Secs
@@ -192,6 +198,8 @@ public abstract class SPGame {
 
 			@Override
 			public void handle(long now) {
+				if (isPaused) stop();
+
 				rotateCycle.setCurrentTime(now);
 
 				// Rotate first and don't rotate again
@@ -239,7 +247,10 @@ public abstract class SPGame {
 	}
 
 	public void onPressed(KeyCode input) {
-		if (matrix.doesCurrentBlockExist()) {
+		if (input == KeyCode.P) {
+			isPaused = !isPaused;
+		}
+		if (matrix.doesCurrentBlockExist() && !isPaused) {
 			switch (input) {
 				case DOWN:
 					softDropTimer.start();
@@ -265,9 +276,6 @@ public abstract class SPGame {
 				case C:
 				case SHIFT:
 					holdBlock();
-					break;
-				case P:
-					isPaused = !isPaused;
 					break;
 				default:
 					break;

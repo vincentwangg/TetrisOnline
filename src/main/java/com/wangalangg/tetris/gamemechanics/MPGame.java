@@ -55,7 +55,6 @@ public class MPGame {
 		};
 		p2Matrix = new RMatrix(p2CurrentBlock);
 		p2UIHandler = new UIHandler(p2Grid, p2Matrix);
-		p2UIHandler.update();
 	}
 
 	public void onPressed(KeyCode input) {

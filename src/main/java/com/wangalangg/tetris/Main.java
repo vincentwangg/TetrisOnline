@@ -13,6 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Font.loadFont(getClass().getResourceAsStream("/fonts/Play-Regular.ttf"), 14);
         primaryStage.setTitle("Tetris");
+        primaryStage.setResizable(false);
 
         Scene scene = new Scene(new StackPane());
         UIManager uiManager = new UIManager(scene, primaryStage);

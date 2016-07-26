@@ -25,7 +25,8 @@ public class UIManager {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/tetris.fxml"));
 			scene.setRoot(loader.load());
 			SPController controller = loader.getController();
-			controller.setupKeyboardInput(scene);
+			controller.configScene(scene);
+			controller.setQuitGameRunnable(this::showMainMenu);
 
 			stage.setWidth(600);
 			stage.setHeight(800);
