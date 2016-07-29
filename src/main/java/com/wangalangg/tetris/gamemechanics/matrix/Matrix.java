@@ -18,7 +18,7 @@ public class Matrix extends RMatrix {
 		this.cycleManager = cycleManager;
 	}
 
-	public boolean checkNewBlockInMatrix() {
+	public boolean willNewBlockCollide() {
 		// todo If there is a collision, the player has essentially lost
 		if (!collisionHandler.willCurrentBlockCollide()) {
 			updateMatrix();

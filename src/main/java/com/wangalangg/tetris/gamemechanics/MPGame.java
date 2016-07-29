@@ -9,9 +9,6 @@ import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
-
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -42,6 +39,11 @@ public class MPGame {
 			@Override
 			public void onBlockLanded() {
 				socket.emit("blockLanded", getMoveBlockDataJson());
+			}
+
+			@Override
+			public void onGameOver() {
+				// todo implement
 			}
 		};
 		spGame.pause();

@@ -69,7 +69,6 @@ public abstract class SPGame {
 
 			@Override
 			public void handle(long now) {
-				// Todo make paused pause time in cycleManager also
 				if (!isPaused) {
 					// Keep track of game cycle
 					gameCycle.setCurrentTime(now);
@@ -321,8 +320,13 @@ public abstract class SPGame {
 	public void addBlockToMatrix(Blocks block) {
 		currentBlock.setBlock(block);
 		matrix.getGhostBlock().update();
-		matrix.checkNewBlockInMatrix();
-		onNewBlock();
+
+		// Check to see if player lost
+		if (matrix.willNewBlockCollide()) {
+			onGameOver();
+		} else {
+			onNewBlock();
+		}
 	}
 
 	public void pause() {
@@ -331,6 +335,13 @@ public abstract class SPGame {
 
 	public void unpause() {
 		isPaused = false;
+	}
+
+	public void restart() {
+		matrix.reset();
+		blockManager.reset();
+		gameCycle.restartTimer();
+		matrix.updateMatrix();
 	}
 
 	public JSONObject getMoveBlockDataJson() {
@@ -373,4 +384,6 @@ public abstract class SPGame {
 	public abstract void onNewBlock();
 
 	public abstract void onBlockLanded();
+
+	public abstract void onGameOver();
 }

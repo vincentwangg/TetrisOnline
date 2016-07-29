@@ -56,4 +56,9 @@ public class RandomBlockGenerator {
 		}
 		return nextBlocks.pop();
 	}
+
+	public void reset() {
+		nextBlocks.clear();
+		fillQueue();
+	}
 }

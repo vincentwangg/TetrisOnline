@@ -24,7 +24,7 @@ public class SPController implements Controller {
 	@FXML
 	protected GridPane tetrisGrid;
 	@FXML
-	protected StackPane pauseGroup;
+	protected StackPane pauseGroup, gameOverScreen;
 	@FXML
 	protected ImageView holdBlock, block1, block2, block3, block4, block5;
 	@FXML
@@ -55,6 +55,11 @@ public class SPController implements Controller {
 			public void onBlockLanded() {
 				// And anotha one
 			}
+
+			@Override
+			public void onGameOver() {
+				showGameOverScreen();
+			}
 		};
 	}
 
@@ -66,14 +71,9 @@ public class SPController implements Controller {
 	public void configScene(Scene scene) {
 		this.scene = scene;
 		scene.getRoot().requestFocus();
-		scene.setOnKeyPressed(evt -> {
-			spGame.onPressed(evt.getCode());
-			System.out.println(evt.getCode());
-		});
-
-		scene.setOnKeyReleased(event -> {
-			spGame.onReleased(event.getCode());
-		});
+		menuButton.setOnMouseExited(evt -> scene.getRoot().requestFocus());
+		scene.setOnKeyPressed(evt -> spGame.onPressed(evt.getCode()));
+		scene.setOnKeyReleased(evt -> spGame.onReleased(evt.getCode()));
 	}
 
 	public void setQuitGameRunnable(Runnable quitGameRunnable) {
@@ -96,5 +96,18 @@ public class SPController implements Controller {
 
 	public void quitGame(ActionEvent event) {
 		quitGameRunnable.run();
+	}
+
+	private void showGameOverScreen() {
+		scene.getRoot().requestFocus();
+		gameOverScreen.setVisible(true);
+		spGame.pause();
+	}
+
+	public void playAgain(ActionEvent event) {
+		spGame.unpause();
+		spGame.restart();
+		gameOverScreen.setVisible(false);
+		scene.getRoot().requestFocus();
 	}
 }

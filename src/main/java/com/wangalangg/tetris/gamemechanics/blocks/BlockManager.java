@@ -50,4 +50,8 @@ public class BlockManager {
 		System.arraycopy(queued, 1, queued, 0, 4);
 		queued[4] = generator.nextBlock();
 	}
+
+	public void reset() {
+		generator.reset();
+	}
 }

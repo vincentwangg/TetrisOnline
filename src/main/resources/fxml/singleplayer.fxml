@@ -199,6 +199,39 @@
         <Rectangle width="24"/>
     </HBox>
 
+    <StackPane fx:id="gameOverScreen"
+               visible="false">
+        <ImageView>
+            <Image url="/screens/light_mask.png"
+                   backgroundLoading="true"
+            />
+        </ImageView>
+
+        <ImageView>
+            <Image url="/screens/pause_window.png"
+                   backgroundLoading="true"
+            />
+        </ImageView>
+
+        <VBox alignment="CENTER"
+              spacing="30"
+        >
+            <Text text="You died :("
+                  styleClass="play-font, font-25"
+            />
+            <Button prefWidth="200"
+                    text="Play Again"
+                    styleClass="play-font, font-25"
+                    onAction="#playAgain"
+            />
+            <Button prefWidth="200"
+                    text="Quit"
+                    onAction="#quitGame"
+                    styleClass="play-font, font-25"
+            />
+        </VBox>
+    </StackPane>
+
     <StackPane fx:id="pauseGroup"
                visible="false">
         <ImageView>

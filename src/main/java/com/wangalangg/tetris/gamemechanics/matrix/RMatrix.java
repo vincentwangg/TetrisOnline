@@ -33,6 +33,13 @@ public class RMatrix {
 		}
 	}
 
+	public void reset() {
+		baseMatrix = new int[ACTUAL_ROWS][ACTUAL_COLS];
+		activeMatrix = new int[ACTUAL_ROWS][ACTUAL_COLS];
+		padMatrices(activeMatrix, baseMatrix);
+		ghostBlock.update();
+	}
+
 	/**
 	 * Updates matrix visually
 	 */
