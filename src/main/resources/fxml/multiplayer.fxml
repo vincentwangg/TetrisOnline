@@ -7,6 +7,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.shape.Line?>
 <StackPane fx:controller="com.wangalangg.tetris.controllers.MPController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="/css/tetris.css">
@@ -132,79 +133,108 @@
 
         <Rectangle width="28"/>
 
-        <StackPane>
-            <VBox alignment="CENTER">
+        <VBox alignment="CENTER">
 
+            <StackPane>
+                <Rectangle width="96"
+                           height="100"
+                           arcHeight="20"
+                           arcWidth="20"
+                           fill="lightgray"
+                />
+                <VBox alignment="CENTER">
+
+                    <Text text="NEXT"
+                          styleClass="play-font, font-25"/>
+
+                    <StackPane>
+                        <Rectangle height="60"/>
+                        <ImageView fx:id="block1"/>
+                    </StackPane>
+                </VBox>
+            </StackPane>
+
+            <Rectangle height="20"/>
+
+            <VBox>
                 <StackPane>
                     <Rectangle width="96"
-                               height="100"
+                               height="384"
                                arcHeight="20"
                                arcWidth="20"
-                               fill="lightgray"
-                    />
-                    <VBox alignment="CENTER">
-
-                        <Text text="NEXT"
-                              styleClass="play-font, font-25"/>
-
+                               fill="lightgray"/>
+                    <VBox>
                         <StackPane>
-                            <Rectangle height="60"/>
-                            <ImageView fx:id="block1"/>
+                            <Rectangle height="96"/>
+                            <ImageView fx:id="block2"/>
+                        </StackPane>
+                        <StackPane>
+                            <Rectangle height="96"/>
+                            <ImageView fx:id="block3"/>
+                        </StackPane>
+                        <StackPane>
+                            <Rectangle height="96"/>
+                            <ImageView fx:id="block4"/>
+                        </StackPane>
+                        <StackPane>
+                            <Rectangle height="96"/>
+                            <ImageView fx:id="block5"/>
                         </StackPane>
                     </VBox>
                 </StackPane>
-
-                <Rectangle height="20"/>
-
-                <VBox>
-                    <StackPane>
-                        <Rectangle width="96"
-                                   height="384"
-                                   arcHeight="20"
-                                   arcWidth="20"
-                                   fill="lightgray"/>
-                        <VBox>
-                            <StackPane>
-                                <Rectangle height="96"/>
-                                <ImageView fx:id="block2"/>
-                            </StackPane>
-                            <StackPane>
-                                <Rectangle height="96"/>
-                                <ImageView fx:id="block3"/>
-                            </StackPane>
-                            <StackPane>
-                                <Rectangle height="96"/>
-                                <ImageView fx:id="block4"/>
-                            </StackPane>
-                            <StackPane>
-                                <Rectangle height="96"/>
-                                <ImageView fx:id="block5"/>
-                            </StackPane>
-                        </VBox>
-                    </StackPane>
-                </VBox>
-
             </VBox>
-            <VBox alignment="TOP_CENTER">
-                <Rectangle height="30"/>
-                <HBox alignment="CENTER_RIGHT">
-                    <Button fx:id="menuButton"
-                            text="Menu"
-                            styleClass="play-font, font-25"
-                            onAction="#openMenu"
-                    />
-                </HBox>
-            </VBox>
-        </StackPane>
+
+        </VBox>
 
         <Rectangle width="50"/>
 
         <StackPane>
             <Rectangle width="150"
-                       height="100"
-                       fill="GOLD"
+                       height="600"
+                       fill="lightgray"
+                       arcWidth="20"
+                       arcHeight="20"
             />
-
+            <StackPane>
+                <VBox alignment="CENTER"
+                      spacing="10"
+                >
+                    <Text text="Room"
+                          styleClass="play-font, font-25"
+                    />
+                    <Rectangle width="100"
+                               height="3"
+                               arcWidth="1"
+                               arcHeight="1"
+                               fill="darkgray"
+                    />
+                    <Text fx:id="roomIDText"
+                          text="Loading..."
+                          styleClass="play-font, font-25"
+                    />
+                    <Rectangle height="20"/>
+                    <Text text="Time left"
+                          styleClass="play-font, font-25"
+                    />
+                    <Rectangle width="100"
+                               height="3"
+                               arcWidth="1"
+                               arcHeight="1"
+                               fill="darkgray"
+                    />
+                    <Text fx:id="timeLeftText"
+                          text="Loading..."
+                          styleClass="play-font, font-25"
+                    />
+                </VBox>
+                <VBox alignment="TOP_CENTER">
+                    <Rectangle height="110"/>
+                    <Button text="Menu"
+                            styleClass="play-font, font-25"
+                            onAction="#openMenu"
+                    />
+                </VBox>
+            </StackPane>
         </StackPane>
 
         <Rectangle width="50"/>
@@ -220,7 +250,7 @@
 
     <StackPane fx:id="pauseGroup"
                visible="false">
-        <ImageView fitWidth="1000">
+        <ImageView fitWidth="1200">
             <Image url="/screens/light_mask.png"
                    backgroundLoading="true"
             />

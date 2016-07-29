@@ -54,7 +54,7 @@ public class UIManager {
 				MPController controller = loader.getController();
 				controller.configScene(scene);
 				controller.setQuitGameRunnable(this::showMainMenu);
-				controller.setSocket(socket);
+				controller.configSocket(socket);
 				currentController = controller;
 
 				stage.setWidth(1200);

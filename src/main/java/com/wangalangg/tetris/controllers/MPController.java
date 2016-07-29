@@ -4,7 +4,11 @@ import com.wangalangg.tetris.gamemechanics.MPGame;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.ui.UIManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.socket.client.Socket;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -28,7 +32,7 @@ public class MPController implements Controller, Online {
 	@FXML
 	protected ImageView holdBlock, block1, block2, block3, block4, block5;
 	@FXML
-	protected Text points, level, linesLeft;
+	protected Text points, level, linesLeft, roomIDText, timeLeftText;
 
 	public MPController() {
 	}
@@ -43,6 +47,11 @@ public class MPController implements Controller, Online {
 	@Override
 	public void setUIManager(UIManager uiManager) {
 		this.uiManager = uiManager;
+	}
+
+	@Override
+	public Socket getSocket() {
+		return socket;
 	}
 
 	public void configScene(Scene scene) {
@@ -78,13 +87,17 @@ public class MPController implements Controller, Online {
 		socket.disconnect();
 	}
 
-	public void setSocket(Socket socket) {
+	public void configSocket(Socket socket) {
 		this.socket = socket;
+		socket.on("roomID", args -> {
+			Platform.runLater(() -> {
+				try {
+					roomIDText.setText(String.format("%03d", ((JSONObject) args[0]).getInt("roomID")));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			});
+		});
 		mpGame.setSocket(socket);
-	}
-
-	@Override
-	public Socket getSocket() {
-		return socket;
 	}
 }

@@ -19,7 +19,6 @@ import javafx.scene.text.Text;
 public class RoomSelectionCtrller implements Controller, Online {
 
 	private UIManager uiManager;
-	private Scene scene;
 	private Socket socket;
 
 	@FXML
@@ -30,11 +29,6 @@ public class RoomSelectionCtrller implements Controller, Online {
 	public RoomSelectionCtrller() {
 		connectSocket();
 		configSocket();
-	}
-
-	@FXML
-	public void initialize() {
-
 	}
 
 	@Override
@@ -48,7 +42,6 @@ public class RoomSelectionCtrller implements Controller, Online {
 	}
 
 	public void configScene(Scene scene) {
-		this.scene = scene;
 		scene.getRoot().requestFocus();
 		scene.getRoot().setOnMousePressed(event -> scene.getRoot().requestFocus());
 	}
@@ -61,7 +54,7 @@ public class RoomSelectionCtrller implements Controller, Online {
 	public void joinRoom(ActionEvent event) {
 		JSONObject room = new JSONObject();
 		try {
-			room.put("roomID", Integer.parseInt(roomNumField.getCharacters().toString()));
+			room.put("roomID", Integer.parseInt(roomNumField.getText()) - 1);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

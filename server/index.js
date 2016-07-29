@@ -123,6 +123,9 @@ io.on('connection', function (socket) {
     });
 
     socket.on("ready", function () {
+        // Tell client what room number they are joining
+        socket.emit("roomID", { roomID : roomID + 1 });
+
         jsonfile.readFile(getRoomFileName(roomID), function (err, roomData) {
             roomData.ready++;
             writeFile(roomID, roomData);
