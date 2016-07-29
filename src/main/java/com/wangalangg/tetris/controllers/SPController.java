@@ -13,7 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
-public class SPController implements ScreenChangeable {
+public class SPController implements Controller {
 
 	protected SPGame spGame;
 	protected UIManager uiManager;

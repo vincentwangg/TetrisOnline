@@ -4,7 +4,7 @@ import com.wangalangg.tetris.controllers.MPController;
 import com.wangalangg.tetris.controllers.MainController;
 import com.wangalangg.tetris.controllers.RoomSelectionCtrller;
 import com.wangalangg.tetris.controllers.SPController;
-import com.wangalangg.tetris.controllers.ScreenChangeable;
+import com.wangalangg.tetris.controllers.Controller;
 
 import java.io.IOException;
 
@@ -17,11 +17,15 @@ public class UIManager {
 
 	private Scene scene;
 	private Stage stage;
-	private ScreenChangeable currentController;
+	private Controller currentController;
 
 	public UIManager(Scene scene, Stage stage) {
 		this.scene = scene;
 		this.stage = stage;
+	}
+
+	public Controller getCurrentController() {
+		return currentController;
 	}
 
 	public void showSinglePlayer() {

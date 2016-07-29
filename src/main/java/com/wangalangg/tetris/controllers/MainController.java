@@ -4,7 +4,7 @@ import com.wangalangg.tetris.ui.UIManager;
 
 import javafx.event.ActionEvent;
 
-public class MainController implements ScreenChangeable {
+public class MainController implements Controller {
 
 	private UIManager uiManager;
 

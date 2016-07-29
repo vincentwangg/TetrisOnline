@@ -3,6 +3,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var jsonfile = require('jsonfile');
 var rooms = [];
+// todo Currently in game variable
 
 // Initialize rooms
 for (var i = 0; i < 10; i++) {
@@ -36,7 +37,11 @@ io.on('connection', function (socket) {
                 roomData.ready = roomData.players.length;
 
                 // If room is now empty, declare it in the list of rooms
-                rooms[roomID] = false;
+                if (roomData.players.length == 0) {
+                    rooms[roomID] = false;
+                }
+
+                console.log("Someone left room " + roomID);
 
                 writeFile(roomID, roomData);
             });
@@ -74,7 +79,7 @@ io.on('connection', function (socket) {
         players.push(socket.id);
         isInRoom = true;
 
-        console.log("Someone connected to room " + roomID);
+        console.log("Someone created and joined room " + roomID);
     });
 
     socket.on("joinRoom", function (data, ack) {
@@ -102,6 +107,8 @@ io.on('connection', function (socket) {
                     roomID = data.roomID;
                     players = roomData.players;
                     isInRoom = true;
+
+                    console.log("Someone joined room " + roomID);
 
                     writeFile(data.roomID, roomData);
                 } else {

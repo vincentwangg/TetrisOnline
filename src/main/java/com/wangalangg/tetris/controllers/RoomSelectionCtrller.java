@@ -16,7 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-public class RoomSelectionCtrller implements ScreenChangeable {
+public class RoomSelectionCtrller implements Controller, Online {
 
 	private UIManager uiManager;
 	private Scene scene;
@@ -42,6 +42,7 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 		this.uiManager = uiManager;
 	}
 
+	@Override
 	public Socket getSocket() {
 		return socket;
 	}

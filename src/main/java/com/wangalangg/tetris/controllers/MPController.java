@@ -4,9 +4,6 @@ import com.wangalangg.tetris.gamemechanics.MPGame;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.ui.UIManager;
 
-import java.net.URISyntaxException;
-
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
-public class MPController implements ScreenChangeable {
+public class MPController implements Controller, Online {
 
 	private MPGame mpGame;
 	private Scene scene;
@@ -84,5 +81,10 @@ public class MPController implements ScreenChangeable {
 	public void setSocket(Socket socket) {
 		this.socket = socket;
 		mpGame.setSocket(socket);
+	}
+
+	@Override
+	public Socket getSocket() {
+		return socket;
 	}
 }
