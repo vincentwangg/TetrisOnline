@@ -53,7 +53,7 @@ public class UIManager {
 				controller.setSocket(socket);
 				currentController = controller;
 
-				stage.setWidth(1000);
+				stage.setWidth(1200);
 				stage.setHeight(800);
 			} catch (IOException e) {
 				e.printStackTrace();

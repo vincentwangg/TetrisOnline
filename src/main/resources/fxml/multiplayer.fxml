@@ -199,6 +199,16 @@
 
         <Rectangle width="50"/>
 
+        <StackPane>
+            <Rectangle width="150"
+                       height="100"
+                       fill="GOLD"
+            />
+
+        </StackPane>
+
+        <Rectangle width="50"/>
+
         <GridPane fx:id="player2Grid"
                   hgap="1"
                   vgap="1"

@@ -4,7 +4,8 @@ var io = require('socket.io')(server);
 var jsonfile = require('jsonfile');
 var rooms = [];
 
-for (var i = 0; i < 1; i++) {
+// Initialize rooms
+for (var i = 0; i < 10; i++) {
     rooms.push(false);
 }
 
@@ -17,20 +18,41 @@ server.listen(8080, function () {
 io.on('connection', function (socket) {
     var roomID = -1;
     var players = [];
+    var isInRoom = false;
 
-    // Indicates Player connected to server
+    /*******************************************/
+    /************   CONNECTION   ***************/
+    /*******************************************/
+
     console.log("Player Connected!");
 
-    // For now, wait for signal to join room, then join room 0 todo join requested room
-    socket.on("createRoom", function () {
-        // Create room data
-        var roomData = {password: "", players: [socket.id], ready: 0};
-        players.push(socket.id);
+    socket.on('disconnect', function () {
+        console.log("Player Disconnected");
+        // If client is in a room, remove them from the room
+        if (isInRoom) {
+            // Find room and remove player from the list of socket id's
+            jsonfile.readFile(getRoomFileName(roomID), function (err, roomData) {
+                roomData.players.splice(roomData.players.indexOf(socket.id), 1);
+                roomData.ready = roomData.players.length;
 
+                // If room is now empty, declare it in the list of rooms
+                rooms[roomID] = false;
+
+                writeFile(roomID, roomData);
+            });
+            // Todo if player leaves deal with the number of people that are readied. do you roomData.ready--?
+        }
+    });
+
+    /*******************************************/
+    /************   ROOM EVENTS   **************/
+    /*******************************************/
+
+    socket.on("createRoom", function () {
         var roomNum;
+
         do {
-            console.log("damn");
-            // If rooms all get occupied, generate 100 more rooms
+            // If rooms all get occupied, generate 10 more rooms
             if (areAllRoomsOccupied()) {
                 for (var i = 0; i < 10; i++) {
                     rooms.push(false);
@@ -41,10 +63,18 @@ io.on('connection', function (socket) {
             roomNum = getRandomInt(0, rooms.length - 1);
         } while (rooms[roomNum]);
 
-        writeFile(roomNum, roomData);
+        // Persist player in room's json file
+        writeFile(roomNum, { password: "", players: [socket.id], ready: 0 });
+
+        // Mark room as occupied
         rooms[roomNum] = true;
+
+        // Set socket instance variables
         roomID = roomNum;
-        console.log(rooms);
+        players.push(socket.id);
+        isInRoom = true;
+
+        console.log("Someone connected to room " + roomID);
     });
 
     socket.on("joinRoom", function (data, ack) {
@@ -57,9 +87,6 @@ io.on('connection', function (socket) {
             jsonfile.readFile(getRoomFileName(data.roomID), function (err, roomData) {
                 // Check to see if room is full or not
                 if (roomData.players.length < 2) {
-                    // Set socket variables
-                    roomID = data.roomID;
-
                     // Let client know they joined the room successfully
                     ack(true);
 
@@ -71,7 +98,10 @@ io.on('connection', function (socket) {
                     // Add player to room json and write to file
                     roomData.players.push(socket.id);
 
+                    // Set socket instance variables
+                    roomID = data.roomID;
                     players = roomData.players;
+                    isInRoom = true;
 
                     writeFile(data.roomID, roomData);
                 } else {
@@ -107,7 +137,10 @@ io.on('connection', function (socket) {
         players.push(data.socketID);
     });
 
-    // On block moved
+    /*******************************************/
+    /**********   IN-GAME EVENTS   *************/
+    /*******************************************/
+
     socket.on("moveBlock", function (data) {
         players.forEach(function (socketID) {
             // Emit block position to other player
@@ -115,7 +148,6 @@ io.on('connection', function (socket) {
         });
     });
 
-    // On new block
     socket.on("newBlock", function (data) {
         players.forEach(function (socketID) {
             // Emit block position to other player
@@ -123,18 +155,11 @@ io.on('connection', function (socket) {
         });
     });
 
-    // On block landed
     socket.on("blockLanded", function (data) {
         players.forEach(function (socketID) {
             // Emit block position to other player
             socket.broadcast.to(socketID).emit("blockLanded", data);
         });
-    });
-
-    // Player disconnect event
-    socket.on('disconnect', function () {
-        console.log("Player Disconnected");
-        // todo figure out how to remove the player from the room
     });
 });
 

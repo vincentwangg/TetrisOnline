@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 public class RoomSelectionCtrller implements ScreenChangeable {
 
@@ -23,6 +24,8 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 
 	@FXML
 	private TextField roomNumField;
+	@FXML
+	private Text errorText;
 
 	public RoomSelectionCtrller() {
 		connectSocket();
@@ -46,7 +49,7 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 	public void configScene(Scene scene) {
 		this.scene = scene;
 		scene.getRoot().requestFocus();
-		scene.getRoot().setOnMouseClicked(event -> scene.getRoot().requestFocus());
+		scene.getRoot().setOnMousePressed(event -> scene.getRoot().requestFocus());
 	}
 
 	public void createRoom(ActionEvent event) {
@@ -55,7 +58,6 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 	}
 
 	public void joinRoom(ActionEvent event) {
-		// todo popup for when room num field is empty or incorrect
 		JSONObject room = new JSONObject();
 		try {
 			room.put("roomID", Integer.parseInt(roomNumField.getCharacters().toString()));
@@ -76,9 +78,14 @@ public class RoomSelectionCtrller implements ScreenChangeable {
 	}
 
 	private void configSocket() {
-		// todo finish this
 		socket.on("playerJoinedRoom", args -> socket.emit("playerJoinedRoom", (JSONObject) args[0]))
-				.on("roomFull", args -> System.out.println("room full"))
-				.on("roomNull", args -> System.out.println("room null"));
+				.on("roomFull", args -> Platform.runLater(() -> errorText.setText("Couldn't join room because it was full.")))
+				.on("roomNull", args -> Platform.runLater(() -> errorText.setText("Room doesn't exist.")));
+	}
+
+	public void backToMenu(ActionEvent event) {
+		socket.off();
+		socket.disconnect();
+		uiManager.showMainMenu();
 	}
 }
