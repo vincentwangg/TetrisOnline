@@ -9,7 +9,10 @@ public class BlockManager {
 	public BlockManager() {
 		generator = new RandomBlockGenerator();
 		queued = new Blocks[5];
+		init();
+	}
 
+	public void init() {
 		for (int i = 0; i < queued.length; i++) {
 			queued[i] = generator.nextBlock();
 		}
@@ -53,5 +56,7 @@ public class BlockManager {
 
 	public void reset() {
 		generator.reset();
+		holdBlock = null;
+		init();
 	}
 }

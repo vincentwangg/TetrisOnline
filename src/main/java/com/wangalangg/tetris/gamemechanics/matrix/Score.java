@@ -9,12 +9,16 @@ public class Score {
 	private Text pointsDisplay, levelDisplay, linesLeftDisplay;
 
 	public Score(Text pointsDisplay, Text levelDisplay, Text linesLeftDisplay) {
-		points = 0;
-		level = 1;
-		linesLeft = 5;
 		this.pointsDisplay = pointsDisplay;
 		this.levelDisplay = levelDisplay;
 		this.linesLeftDisplay = linesLeftDisplay;
+		initValues();
+	}
+
+	private void initValues() {
+		points = 0;
+		level = 1;
+		linesLeft = 5;
 	}
 
 	public void update() {
@@ -105,5 +109,10 @@ public class Score {
 			level++;
 			linesLeft = level * 5;
 		}
+	}
+
+	public void reset() {
+		initValues();
+		update();
 	}
 }

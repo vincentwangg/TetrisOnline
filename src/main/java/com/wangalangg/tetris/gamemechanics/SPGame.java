@@ -320,7 +320,10 @@ public abstract class SPGame {
 		matrix.reset();
 		blockManager.reset();
 		gameCycle.restartTimer();
+		addBlockToMatrix(blockManager.getCurrentBlock());
+		score.reset();
 		matrix.updateMatrix();
+		uiHandler.update();
 	}
 
 	public JSONObject getMoveBlockDataJson() {

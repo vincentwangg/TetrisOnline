@@ -222,7 +222,7 @@
             <Button prefWidth="200"
                     text="Play Again"
                     styleClass="play-font, font-25"
-                    onAction="#playAgain"
+                    onAction="#playAgainFromGameOver"
             />
             <Button prefWidth="200"
                     text="Quit"
@@ -246,19 +246,27 @@
             />
         </ImageView>
 
-        <VBox alignment="CENTER">
+        <VBox alignment="CENTER"
+              spacing="30"
+        >
+            <Rectangle height="10"/>
+
             <Button prefWidth="200"
                     text="Resume"
                     styleClass="play-font, font-25"
                     onAction="#closeMenu"
             />
 
-            <Rectangle height="30"/>
+            <Button prefWidth="200"
+                    text="Restart"
+                    styleClass="play-font, font-25"
+                    onAction="#restartGame"
+            />
 
             <Button prefWidth="200"
                     text="Quit"
-                    onAction="#quitGame"
                     styleClass="play-font, font-25"
+                    onAction="#quitGame"
             />
         </VBox>
     </StackPane>

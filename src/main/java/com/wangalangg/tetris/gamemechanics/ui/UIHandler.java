@@ -67,6 +67,8 @@ public class UIHandler {
 	private void updateImageViews() {
 		if (blockManager.getHoldBlock() != null) {
 			holdBlock.setImage(imageLoader.getImage(blockManager.getHoldBlock()));
+		} else {
+			holdBlock.setImage(null);
 		}
 		for (int i = 0; i < 5; i++) {
 			nextBlocks[i].setImage(imageLoader.getImage(blockManager.getQueuedBlock(i)));

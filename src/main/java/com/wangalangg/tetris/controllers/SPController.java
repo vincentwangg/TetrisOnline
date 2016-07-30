@@ -104,10 +104,17 @@ public class SPController implements Controller {
 		spGame.pause();
 	}
 
-	public void playAgain(ActionEvent event) {
+	public void playAgainFromGameOver(ActionEvent event) {
 		spGame.unpause();
 		spGame.restart();
 		gameOverScreen.setVisible(false);
+		scene.getRoot().requestFocus();
+	}
+
+	public void restartGame(ActionEvent event) {
+		spGame.unpause();
+		spGame.restart();
+		pauseGroup.setVisible(false);
 		scene.getRoot().requestFocus();
 	}
 }
