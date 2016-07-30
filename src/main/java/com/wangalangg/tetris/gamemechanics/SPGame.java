@@ -3,12 +3,11 @@ package com.wangalangg.tetris.gamemechanics;
 import com.wangalangg.tetris.CycleManager;
 import com.wangalangg.tetris.gamemechanics.blocks.BlockManager;
 import com.wangalangg.tetris.gamemechanics.blocks.Blocks;
+import com.wangalangg.tetris.gamemechanics.gamemodes.GameMode;
 import com.wangalangg.tetris.gamemechanics.matrix.BlockInfo;
 import com.wangalangg.tetris.gamemechanics.matrix.Matrix;
-import com.wangalangg.tetris.gamemechanics.matrix.Score;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
-import com.wangalangg.tetris.gamemechanics.utils.LevelInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +16,6 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 
 /**
  * Responsibilities:
@@ -37,10 +35,10 @@ public abstract class SPGame {
 	private UIHandler uiHandler;
 	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer, softDropTimer;
 	private int restingBlockCounter = 0;
-	private Score score;
+	private GameMode gameMode;
 
 	public SPGame(GridPane tetrisGrid, ImageView holdBlockImage, ImageLoader images,
-				  ImageView[] nextBlocksImages, Text points, Text level, Text linesLeft) {
+				  ImageView[] nextBlocksImages, GameMode gameMode) {
 		gameCycle = new CycleManager();
 		blockManager = new BlockManager();
 		currentBlock = new BlockInfo() {
@@ -49,10 +47,10 @@ public abstract class SPGame {
 				onBlockMoved();
 			}
 		};
-		this.score = new Score(points, level, linesLeft);
-		matrix = new Matrix(currentBlock, gameCycle, score);
+		this.gameMode = gameMode;
+		matrix = new Matrix(currentBlock, gameCycle, gameMode);
 		uiHandler = new UIHandler(tetrisGrid, holdBlockImage, images, nextBlocksImages,
-				matrix, blockManager, this.score);
+				matrix, blockManager, this.gameMode);
 
 		softDropTimer = createSoftDropTimer(() -> matrix.handleSoftDrop());
 		rotateLeftTimer = createRotateTimer(() -> matrix.handleRotateLeft());
@@ -73,7 +71,7 @@ public abstract class SPGame {
 					// Keep track of game cycle
 					gameCycle.setCurrentTime(now);
 
-					if (!isFirstCycle && gameCycle.didTimeExceed(LevelInfo.STEP_TIME[score.getLevel() - 1])) {
+					if (!isFirstCycle && gameCycle.didTimeExceed(gameMode.getStepTime())) {
 						gameCycle.restartTimer();
 
 						if (matrix.doesCurrentBlockExist()) {
@@ -321,7 +319,7 @@ public abstract class SPGame {
 		blockManager.reset();
 		gameCycle.restartTimer();
 		addBlockToMatrix(blockManager.getCurrentBlock());
-		score.reset();
+		gameMode.reset();
 		matrix.updateMatrix();
 		uiHandler.update();
 	}

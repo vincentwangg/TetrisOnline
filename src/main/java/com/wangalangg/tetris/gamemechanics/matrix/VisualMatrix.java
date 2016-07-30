@@ -4,7 +4,7 @@ package com.wangalangg.tetris.gamemechanics.matrix;
  * Receiving matrix. Receives current block positions and updates the matrix. This matrix is
  * 	purely visual
  */
-public class RMatrix {
+public class VisualMatrix {
 
 	public static final int WIDTH = 10, HEIGHT = 20;
 	protected static final int ACTUAL_ROWS = 22, ACTUAL_COLS = 12;
@@ -13,7 +13,7 @@ public class RMatrix {
 	protected int[][] baseMatrix, activeMatrix;
 	protected MatrixCollisionHandler collisionHandler;
 
-	public RMatrix(BlockInfo currentBlock) {
+	public VisualMatrix(BlockInfo currentBlock) {
 		baseMatrix = new int[ACTUAL_ROWS][ACTUAL_COLS];
 		activeMatrix = new int[ACTUAL_ROWS][ACTUAL_COLS];
 		collisionHandler = new MatrixCollisionHandler(this);

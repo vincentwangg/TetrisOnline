@@ -4,6 +4,8 @@ public interface GameMode {
 
 	void update();
 
+	float getStepTime();
+
 	void reset();
 
 	void softDrop();

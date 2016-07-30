@@ -58,7 +58,7 @@
 
                     <StackPane>
                         <Rectangle height="29"/>
-                        <Text fx:id="level"
+                        <Text fx:id="levelText"
                               styleClass="play-font, font-25"/>
                     </StackPane>
 
@@ -90,7 +90,7 @@
 
                     <StackPane>
                         <Rectangle height="29"/>
-                        <Text fx:id="linesLeft"
+                        <Text fx:id="linesLeftText"
                               styleClass="play-font, font-25"/>
                     </StackPane>
 
@@ -117,7 +117,7 @@
 
                     <StackPane>
                         <Rectangle height="55"/>
-                        <Text fx:id="points"
+                        <Text fx:id="pointsText"
                               styleClass="play-font, font-25"/>
                     </StackPane>
                 </VBox>

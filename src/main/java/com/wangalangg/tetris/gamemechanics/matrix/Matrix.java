@@ -1,6 +1,7 @@
 package com.wangalangg.tetris.gamemechanics.matrix;
 
 import com.wangalangg.tetris.CycleManager;
+import com.wangalangg.tetris.gamemechanics.gamemodes.GameMode;
 
 /**
  * Responsibilities:
@@ -9,15 +10,15 @@ import com.wangalangg.tetris.CycleManager;
  * - Handles user input
  * - Add blocks into the matrix
  */
-public class Matrix extends RMatrix {
+public class Matrix extends VisualMatrix {
 
 	private CycleManager cycleManager;
-	private Score score;
+	private GameMode gameMode;
 
-	public Matrix(BlockInfo currentBlock, CycleManager cycleManager, Score score) {
+	public Matrix(BlockInfo currentBlock, CycleManager cycleManager, GameMode gameMode) {
 		super(currentBlock);
 		this.cycleManager = cycleManager;
-		this.score = score;
+		this.gameMode = gameMode;
 	}
 
 	public boolean willNewBlockCollide() {
@@ -119,7 +120,7 @@ public class Matrix extends RMatrix {
 		currentBlock.shiftUp();
 		currentBlock.blockChanged();
 		lines--;
-		score.hardDrop(lines);
+		gameMode.hardDrop(lines);
 		updateMatrix();
 		cycleManager.restartTimer();
 	}
@@ -130,7 +131,7 @@ public class Matrix extends RMatrix {
 			currentBlock.shiftUp();
 			return;
 		} else {
-			score.softDrop();
+			gameMode.softDrop();
 		}
 		currentBlock.blockChanged();
 		updateMatrix();
@@ -192,16 +193,16 @@ public class Matrix extends RMatrix {
 	private void determinePoints(int linesCleared) {
 		switch (linesCleared) {
 			case 1:
-				score.single();
+				gameMode.single();
 				break;
 			case 2:
-				score.duhble();
+				gameMode.duhble();
 				break;
 			case 3:
-				score.triple();
+				gameMode.triple();
 				break;
 			case 4:
-				score.tetris();
+				gameMode.tetris();
 				break;
 			default:
 				break;

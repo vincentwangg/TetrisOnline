@@ -18,12 +18,18 @@ public class Sprint implements GameMode {
 
 	@Override
 	public void update() {
+		linesLeftText.setText(Integer.toString(linesLeft));
+	}
 
+	@Override
+	public float getStepTime() {
+		return 1;
 	}
 
 	@Override
 	public void reset() {
-
+		initValues();
+		update();
 	}
 
 	@Override
@@ -38,22 +44,22 @@ public class Sprint implements GameMode {
 
 	@Override
 	public void single() {
-
+		linesLeft--;
 	}
 
 	@Override
 	public void duhble() {
-
+		linesLeft -= 2;
 	}
 
 	@Override
 	public void triple() {
-
+		linesLeft -= 3;
 	}
 
 	@Override
 	public void tetris() {
-
+		linesLeft -= 4;
 	}
 
 	@Override

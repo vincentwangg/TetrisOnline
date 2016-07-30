@@ -1,8 +1,9 @@
 package com.wangalangg.tetris.gamemechanics;
 
 import com.wangalangg.tetris.gamemechanics.blocks.Blocks;
+import com.wangalangg.tetris.gamemechanics.gamemodes.GameMode;
 import com.wangalangg.tetris.gamemechanics.matrix.BlockInfo;
-import com.wangalangg.tetris.gamemechanics.matrix.RMatrix;
+import com.wangalangg.tetris.gamemechanics.matrix.VisualMatrix;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
 
@@ -13,19 +14,18 @@ import io.socket.client.Socket;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 
 public class MPGame {
 
 	private SPGame spGame;
-	private RMatrix p2Matrix;
+	private VisualMatrix p2Matrix;
 	private BlockInfo p2CurrentBlock;
 	private UIHandler p2UIHandler;
 	private Socket socket;
 
 	public MPGame(GridPane p1Grid, GridPane p2Grid, ImageView holdBlock, ImageLoader imageLoader,
-				  ImageView[] blocks, Text points, Text level, Text linesLeft) {
-		spGame = new SPGame(p1Grid, holdBlock, imageLoader, blocks, points, level, linesLeft) {
+				  ImageView[] blocks, GameMode gameMode) {
+		spGame = new SPGame(p1Grid, holdBlock, imageLoader, blocks, gameMode) {
 			@Override
 			public void onBlockMoved() {
 				socket.emit("moveBlock", getMoveBlockDataJson());
@@ -53,7 +53,7 @@ public class MPGame {
 				// Do nothing
 			}
 		};
-		p2Matrix = new RMatrix(p2CurrentBlock);
+		p2Matrix = new VisualMatrix(p2CurrentBlock);
 		p2UIHandler = new UIHandler(p2Grid, p2Matrix);
 	}
 

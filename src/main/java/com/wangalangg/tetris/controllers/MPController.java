@@ -1,6 +1,7 @@
 package com.wangalangg.tetris.controllers;
 
 import com.wangalangg.tetris.gamemechanics.MPGame;
+import com.wangalangg.tetris.gamemechanics.gamemodes.Sprint;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.ui.UIManager;
 
@@ -32,7 +33,7 @@ public class MPController implements Controller, Online {
 	@FXML
 	protected ImageView holdBlock, block1, block2, block3, block4, block5;
 	@FXML
-	protected Text points, level, linesLeft, roomIDText, timeLeftText;
+	protected Text linesLeftText, roomIDText, timeLeftText;
 
 	public MPController() {
 	}
@@ -41,7 +42,7 @@ public class MPController implements Controller, Online {
 	public void initialize() {
 		ImageView[] blocks = {block1, block2, block3, block4, block5};
 		mpGame = new MPGame(player1Grid, player2Grid, holdBlock, new ImageLoader(),
-				blocks, points, level, linesLeft);
+				blocks, new Sprint(linesLeftText));
 	}
 
 	@Override

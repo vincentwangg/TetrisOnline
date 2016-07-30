@@ -1,9 +1,9 @@
 package com.wangalangg.tetris.gamemechanics.ui;
 
 import com.wangalangg.tetris.gamemechanics.blocks.BlockManager;
+import com.wangalangg.tetris.gamemechanics.gamemodes.GameMode;
 import com.wangalangg.tetris.gamemechanics.matrix.Matrix;
-import com.wangalangg.tetris.gamemechanics.matrix.RMatrix;
-import com.wangalangg.tetris.gamemechanics.matrix.Score;
+import com.wangalangg.tetris.gamemechanics.matrix.VisualMatrix;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -21,27 +21,27 @@ public class UIHandler {
 	private ImageView holdBlock;
 	private ImageView[] nextBlocks;
 	private ImageLoader imageLoader;
-	private RMatrix matrix;
+	private VisualMatrix matrix;
 	private BlockManager blockManager;
-	private Score score;
+	private GameMode gameMode;
 	private boolean isMainPlayer;
 
 	// Constructor for other player matrix UI's
-	public UIHandler(GridPane tetrisGrid, RMatrix matrix) {
+	public UIHandler(GridPane tetrisGrid, VisualMatrix matrix) {
 		this(tetrisGrid, null, null, null, matrix, null, null);
 		isMainPlayer = false;
 	}
 
 	// Constructor for main player ui. (UI with the hold block image previews and such)
 	public UIHandler(GridPane tetrisGrid, ImageView holdBlock, ImageLoader imageLoader,
-					 ImageView[] nextBlocks, RMatrix matrix, BlockManager blockManager, Score score) {
+					 ImageView[] nextBlocks, VisualMatrix matrix, BlockManager blockManager, GameMode gameMode) {
 		this.tetrisGrid = tetrisGrid;
 		this.holdBlock = holdBlock;
 		this.nextBlocks = nextBlocks;
 		this.imageLoader = imageLoader;
 		this.matrix = matrix;
 		this.blockManager = blockManager;
-		this.score = score;
+		this.gameMode = gameMode;
 		isMainPlayer = true;
 
 		// Create Tetris area
@@ -55,7 +55,7 @@ public class UIHandler {
 	public void update() {
 		if (isMainPlayer) {
 			updateImageViews();
-			score.update();
+			gameMode.update();
 		}
 		updateGridColors();
 	}

@@ -14,7 +14,9 @@
     <HBox>
         <Rectangle width="28"/>
 
-        <VBox alignment="center">
+        <VBox alignment="center"
+              spacing="20"
+        >
             <StackPane>
                 <Rectangle width="96"
                            height="100"
@@ -33,40 +35,6 @@
                     </StackPane>
                 </VBox>
             </StackPane>
-
-            <Rectangle height="20"/>
-
-            <StackPane>
-                <Rectangle width="96"
-                           height="96"
-                           arcHeight="20"
-                           arcWidth="20"
-                           fill="lightgray"
-                />
-
-                <VBox alignment="CENTER">
-                    <Rectangle height="8"/>
-
-                    <StackPane>
-                        <Rectangle height="29"/>
-                        <Text text="LEVEL"
-                              styleClass="play-font, font-25"/>
-                    </StackPane>
-
-                    <Rectangle height="13"/>
-
-                    <StackPane>
-                        <Rectangle height="29"/>
-                        <Text fx:id="level"
-                              styleClass="play-font, font-25"/>
-                    </StackPane>
-
-                    <Rectangle height="17"/>
-                </VBox>
-            </StackPane>
-
-            <Rectangle height="20"/>
-
             <StackPane>
                 <Rectangle width="96"
                            height="96"
@@ -89,37 +57,13 @@
 
                     <StackPane>
                         <Rectangle height="29"/>
-                        <Text fx:id="linesLeft"
+                        <Text fx:id="linesLeftText"
                               styleClass="play-font, font-25"/>
                     </StackPane>
 
                     <Rectangle height="22"/>
                 </VBox>
 
-            </StackPane>
-
-            <Rectangle height="20"/>
-
-            <StackPane>
-                <Rectangle width="96"
-                           height="96"
-                           arcHeight="20"
-                           arcWidth="20"
-                           fill="lightgray"
-                />
-
-                <VBox alignment="CENTER">
-
-
-                    <Text text="SCORE"
-                          styleClass="play-font, font-25"/>
-
-                    <StackPane>
-                        <Rectangle height="55"/>
-                        <Text fx:id="points"
-                              styleClass="play-font, font-25"/>
-                    </StackPane>
-                </VBox>
             </StackPane>
         </VBox>
 
