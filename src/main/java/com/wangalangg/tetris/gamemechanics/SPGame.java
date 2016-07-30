@@ -49,8 +49,8 @@ public abstract class SPGame {
 				onBlockMoved();
 			}
 		};
-		matrix = new Matrix(currentBlock, gameCycle);
 		this.score = new Score(points, level, linesLeft);
+		matrix = new Matrix(currentBlock, gameCycle, score);
 		uiHandler = new UIHandler(tetrisGrid, holdBlockImage, images, nextBlocksImages,
 				matrix, blockManager, this.score);
 
@@ -139,8 +139,6 @@ public abstract class SPGame {
 				shiftCycle.restartTimer();
 				action.run();
 				gameCycle.restartTimer();
-				// todo if user holds down, next cycle will never come and points will keep going up
-				score.softDrop();
 			}
 		};
 	}
@@ -219,30 +217,11 @@ public abstract class SPGame {
 
 	private void onBlockFallen() {
 		onBlockLanded();
-		determinePoints(matrix.onBlockFallen());
+		matrix.onBlockFallen();
 		restingBlockCounter = 0;
 		holdUsed = false;
 		blockManager.nextBlock();
 		addBlockToMatrix(blockManager.getCurrentBlock());
-	}
-
-	private void determinePoints(int linesCleared) {
-		switch (linesCleared) {
-			case 1:
-				score.single();
-				break;
-			case 2:
-				score.duhble();
-				break;
-			case 3:
-				score.triple();
-				break;
-			case 4:
-				score.tetris();
-				break;
-			default:
-				break;
-		}
 	}
 
 	public void onPressed(KeyCode input) {
@@ -269,7 +248,7 @@ public abstract class SPGame {
 					shiftLeftTimer.start();
 					break;
 				case SPACE:
-					score.hardDrop(matrix.handleHardDrop());
+					matrix.handleHardDrop();
 					onBlockFallen();
 					break;
 				case C:

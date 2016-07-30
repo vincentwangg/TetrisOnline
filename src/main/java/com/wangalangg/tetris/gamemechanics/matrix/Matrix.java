@@ -12,10 +12,12 @@ import com.wangalangg.tetris.CycleManager;
 public class Matrix extends RMatrix {
 
 	private CycleManager cycleManager;
+	private Score score;
 
-	public Matrix(BlockInfo currentBlock, CycleManager cycleManager) {
+	public Matrix(BlockInfo currentBlock, CycleManager cycleManager, Score score) {
 		super(currentBlock);
 		this.cycleManager = cycleManager;
+		this.score = score;
 	}
 
 	public boolean willNewBlockCollide() {
@@ -108,7 +110,7 @@ public class Matrix extends RMatrix {
 		updateMatrix();
 	}
 
-	public int handleHardDrop() {
+	public void handleHardDrop() {
 		int lines = 0;
 		do {
 			currentBlock.shiftDown();
@@ -117,9 +119,9 @@ public class Matrix extends RMatrix {
 		currentBlock.shiftUp();
 		currentBlock.blockChanged();
 		lines--;
+		score.hardDrop(lines);
 		updateMatrix();
 		cycleManager.restartTimer();
-		return lines;
 	}
 
 	public void handleSoftDrop() {
@@ -127,6 +129,8 @@ public class Matrix extends RMatrix {
 		if (collisionHandler.willCurrentBlockCollide()) {
 			currentBlock.shiftUp();
 			return;
+		} else {
+			score.softDrop();
 		}
 		currentBlock.blockChanged();
 		updateMatrix();
@@ -176,6 +180,32 @@ public class Matrix extends RMatrix {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int clearLines() {
+		int clearedLines = super.clearLines();
+		determinePoints(clearedLines);
+		return clearedLines;
+	}
+
+	private void determinePoints(int linesCleared) {
+		switch (linesCleared) {
+			case 1:
+				score.single();
+				break;
+			case 2:
+				score.duhble();
+				break;
+			case 3:
+				score.triple();
+				break;
+			case 4:
+				score.tetris();
+				break;
+			default:
+				break;
+		}
 	}
 
 	public void printMatrices() {
