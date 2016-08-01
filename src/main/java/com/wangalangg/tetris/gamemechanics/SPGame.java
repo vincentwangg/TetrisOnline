@@ -220,6 +220,8 @@ public abstract class SPGame {
 		holdUsed = false;
 		blockManager.nextBlock();
 		addBlockToMatrix(blockManager.getCurrentBlock());
+		matrix.updateMatrix();
+		uiHandler.update();
 	}
 
 	public void onPressed(KeyCode input) {
