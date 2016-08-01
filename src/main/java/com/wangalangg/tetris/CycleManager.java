@@ -37,4 +37,8 @@ public class CycleManager {
 	public boolean isPaused() {
 		return isPaused;
 	}
+
+	public double getTimePassed() {
+		return timePassed;
+	}
 }

@@ -31,14 +31,14 @@ import javafx.scene.layout.GridPane;
 public abstract class SPGame {
 
 	private boolean holdUsed = false;
-	private int restingBlockCounter = 0;
 	private Matrix matrix;
 	private BlockInfo currentBlock;
 	private CycleManager gameCycle;
 	private BlockManager blockManager;
 	private UIHandler uiHandler;
 	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer;
-	private AnimationTimer softDropTimer, hardDropTimer, restingBlockTimer;
+	private AnimationTimer softDropTimer, hardDropTimer;
+	private RestingBlockTimer restingBlockTimer;
 	private List<CycleManager> allCyclers = new ArrayList<>();
 	private GameMode gameMode;
 
@@ -51,6 +51,7 @@ public abstract class SPGame {
 			@Override
 			public void blockChanged() {
 				onBlockMoved();
+				restingBlockTimer.blockMoved();
 			}
 		};
 		this.gameMode = gameMode;
@@ -67,12 +68,7 @@ public abstract class SPGame {
 		rotateRightTimer = createOneClickTimer(() -> matrix.handleRotateRight());
 		shiftLeftTimer = createShiftTimer(() -> matrix.handleShiftLeft());
 		shiftRightTimer = createShiftTimer(() -> matrix.handleShiftRight());
-		restingBlockTimer = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-
-			}
-		};
+		restingBlockTimer = createRestingBlockTimer();
 		createGameTimer();
 	}
 
@@ -97,14 +93,8 @@ public abstract class SPGame {
 					//  or move the piece under other pieces
 					if (matrix.doesCurrentBlockExist()
 							&& !canStepFrame
-							&& restingBlockCounter < 1) {
-						restingBlockCounter++;
-					}
-
-					// Block has fallen
-					else if (matrix.doesCurrentBlockExist()
-							&& !canStepFrame) {
-						onBlockFallen();
+							&& !restingBlockTimer.started()) {
+						restingBlockTimer.start();
 					}
 				}
 
@@ -235,15 +225,10 @@ public abstract class SPGame {
 		};
 	}
 
-	private AnimationTimer createRestingBlockTimer() {
+	private RestingBlockTimer createRestingBlockTimer() {
 		CycleManager cycleMgr = new CycleManager();
 		allCyclers.add(cycleMgr);
-		return new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-
-			}
-		};
+		return new RestingBlockTimer(cycleMgr, this::onBlockFallen, matrix);
 	}
 
 	private void onBlockFallen() {
@@ -254,6 +239,7 @@ public abstract class SPGame {
 		addBlockToMatrix(blockManager.getCurrentBlock());
 		matrix.updateMatrix();
 		uiHandler.update();
+		restingBlockTimer.stop();
 	}
 
 	public void onPressed(KeyCode input) {

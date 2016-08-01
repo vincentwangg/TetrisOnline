@@ -47,6 +47,13 @@ public class Matrix extends VisualMatrix {
 		return true;
 	}
 
+	public boolean canShiftDown() {
+		currentBlock.shiftDown();
+		boolean canShift = collisionHandler.willCurrentBlockCollide();
+		currentBlock.shiftUp();
+		return canShift;
+	}
+
 	public void handleShiftLeft() {
 		currentBlock.shiftLeft();
 		if (collisionHandler.willCurrentBlockCollide()) {
