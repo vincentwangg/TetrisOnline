@@ -33,7 +33,8 @@ public abstract class SPGame {
 	private boolean holdUsed = false, isPaused = false;
 	private BlockManager blockManager;
 	private UIHandler uiHandler;
-	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer, softDropTimer;
+	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer;
+	private AnimationTimer softDropTimer, hardDropTimer;
 	private int restingBlockCounter = 0;
 	private GameMode gameMode;
 
@@ -53,8 +54,12 @@ public abstract class SPGame {
 				matrix, blockManager, this.gameMode);
 
 		softDropTimer = createSoftDropTimer(() -> matrix.handleSoftDrop());
-		rotateLeftTimer = createRotateTimer(() -> matrix.handleRotateLeft());
-		rotateRightTimer = createRotateTimer(() -> matrix.handleRotateRight());
+		hardDropTimer = createOneClickTimer(() -> {
+			matrix.handleHardDrop();
+			onBlockFallen();
+		});
+		rotateLeftTimer = createOneClickTimer(() -> matrix.handleRotateLeft());
+		rotateRightTimer = createOneClickTimer(() -> matrix.handleRotateRight());
 		shiftLeftTimer = createShiftTimer(() -> matrix.handleShiftLeft());
 		shiftRightTimer = createShiftTimer(() -> matrix.handleShiftRight());
 		createGameTimer();
@@ -186,8 +191,12 @@ public abstract class SPGame {
 		};
 	}
 
-	private AnimationTimer createRotateTimer(Runnable rotate) {
-		CycleManager rotateCycle = new CycleManager();
+	/**
+	 * Creates a timer for when a key can only be clicked once and won't continue to be pressed
+	 * after being held down
+	 */
+	private AnimationTimer createOneClickTimer(Runnable action) {
+		CycleManager cycleMgr = new CycleManager();
 		return new AnimationTimer() {
 			boolean isFirstRotation = true;
 
@@ -195,12 +204,12 @@ public abstract class SPGame {
 			public void handle(long now) {
 				if (isPaused) stop();
 
-				rotateCycle.setCurrentTime(now);
+				cycleMgr.setCurrentTime(now);
 
 				// Rotate first and don't rotate again
 				if (isFirstRotation) {
-					rotate.run();
-					rotateCycle.restartTimer();
+					action.run();
+					cycleMgr.restartTimer();
 					isFirstRotation = false;
 				}
 			}
@@ -248,8 +257,7 @@ public abstract class SPGame {
 					shiftLeftTimer.start();
 					break;
 				case SPACE:
-					matrix.handleHardDrop();
-					onBlockFallen();
+					hardDropTimer.start();
 					break;
 				case C:
 				case SHIFT:
@@ -280,6 +288,10 @@ public abstract class SPGame {
 					break;
 				case RIGHT:
 					shiftRightTimer.stop();
+					break;
+				case SPACE:
+					hardDropTimer.stop();
+					break;
 				default:
 					break;
 			}
