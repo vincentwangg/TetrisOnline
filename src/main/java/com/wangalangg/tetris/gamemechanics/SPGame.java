@@ -12,6 +12,9 @@ import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -27,20 +30,22 @@ import javafx.scene.layout.GridPane;
  */
 public abstract class SPGame {
 
+	private boolean holdUsed = false;
+	private int restingBlockCounter = 0;
 	private Matrix matrix;
 	private BlockInfo currentBlock;
 	private CycleManager gameCycle;
-	private boolean holdUsed = false, isPaused = false;
 	private BlockManager blockManager;
 	private UIHandler uiHandler;
 	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer;
-	private AnimationTimer softDropTimer, hardDropTimer;
-	private int restingBlockCounter = 0;
+	private AnimationTimer softDropTimer, hardDropTimer, restingBlockTimer;
+	private List<CycleManager> allCyclers = new ArrayList<>();
 	private GameMode gameMode;
 
 	public SPGame(GridPane tetrisGrid, ImageView holdBlockImage, ImageLoader images,
 				  ImageView[] nextBlocksImages, GameMode gameMode) {
 		gameCycle = new CycleManager();
+		allCyclers.add(gameCycle);
 		blockManager = new BlockManager();
 		currentBlock = new BlockInfo() {
 			@Override
@@ -62,6 +67,12 @@ public abstract class SPGame {
 		rotateRightTimer = createOneClickTimer(() -> matrix.handleRotateRight());
 		shiftLeftTimer = createShiftTimer(() -> matrix.handleShiftLeft());
 		shiftRightTimer = createShiftTimer(() -> matrix.handleShiftRight());
+		restingBlockTimer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+
+			}
+		};
 		createGameTimer();
 	}
 
@@ -72,69 +83,68 @@ public abstract class SPGame {
 
 			@Override
 			public void handle(long now) {
-				if (!isPaused) {
-					// Keep track of game cycle
-					gameCycle.setCurrentTime(now);
+				// Keep track of game cycle
+				gameCycle.setCurrentTime(now);
 
-					if (!isFirstCycle && gameCycle.didTimeExceed(gameMode.getStepTime())) {
-						gameCycle.restartTimer();
+				if (!isFirstCycle && gameCycle.didTimeExceed(gameMode.getStepTime()) && !gameCycle.isPaused()) {
+					gameCycle.restartTimer();
 
-						if (matrix.doesCurrentBlockExist()) {
-							canStepFrame = matrix.stepFrame();
-						}
-
-						// If block hit bottom, give 2 cycles for the player to finalize their decision
-						//  or move the piece under other pieces
-						if (matrix.doesCurrentBlockExist()
-								&& !canStepFrame
-								&& restingBlockCounter < 1) {
-							restingBlockCounter++;
-						}
-
-						// Block has fallen
-						else if (matrix.doesCurrentBlockExist()
-								&& !canStepFrame) {
-							onBlockFallen();
-						}
+					if (matrix.doesCurrentBlockExist()) {
+						canStepFrame = matrix.stepFrame();
 					}
 
-					if (isFirstCycle) {
-						addBlockToMatrix(blockManager.getCurrentBlock());
-						isFirstCycle = false;
-						gameCycle.restartTimer();
+					// If block hit bottom, give 2 cycles for the player to finalize their decision
+					//  or move the piece under other pieces
+					if (matrix.doesCurrentBlockExist()
+							&& !canStepFrame
+							&& restingBlockCounter < 1) {
+						restingBlockCounter++;
 					}
 
-					uiHandler.update();
+					// Block has fallen
+					else if (matrix.doesCurrentBlockExist()
+							&& !canStepFrame) {
+						onBlockFallen();
+					}
 				}
+
+				if (isFirstCycle) {
+					addBlockToMatrix(blockManager.getCurrentBlock());
+					isFirstCycle = false;
+					gameCycle.restartTimer();
+				}
+
+				uiHandler.update();
 			}
 		}.start();
 	}
 
 	private AnimationTimer createSoftDropTimer(Runnable action) {
 		CycleManager shiftCycle = new CycleManager();
+		allCyclers.add(shiftCycle);
 		return new AnimationTimer() {
 			boolean isFirstShift = true;
 
 			@Override
 			public void handle(long now) {
-				if (isPaused) stop();
-
 				shiftCycle.setCurrentTime(now);
 
-				// Process is done backwards to ensure everything runs once
-				//  e.g. if shifted first, isFirstShift will become false, making delay2Secs
-				//       method run, making isSecondShift true, making the shiftEvery1Sec run,
-				//       shifting the block twice
+				if (!shiftCycle.isPaused()) {
+					// Process is done backwards to ensure everything runs once
+					//  e.g. if shifted first, isFirstShift will become false, making delay2Secs
+					//       method run, making isSecondShift true, making the shiftEvery1Sec run,
+					//       shifting the block twice
 
-				// Shift every 0.05 sec
-				if (!isFirstShift && shiftCycle.didTimeExceed(0.05)) {
-					shiftDown();
-				}
+					// Shift every 0.05 sec
+					if (!isFirstShift && shiftCycle.didTimeExceed(0.05)) {
+						shiftDown();
+					}
 
-				// Shift first
-				if (isFirstShift) {
-					isFirstShift = false;
-					shiftDown();
+					// Shift first
+					if (isFirstShift) {
+						isFirstShift = false;
+						shiftDown();
+					}
 				}
 			}
 
@@ -148,37 +158,39 @@ public abstract class SPGame {
 
 	private AnimationTimer createShiftTimer(Runnable shiftAction) {
 		CycleManager shiftCycle = new CycleManager();
+		allCyclers.add(shiftCycle);
 		return new AnimationTimer() {
 			boolean isFirstShift = true;
 			boolean isSecondShift = false;
 
 			@Override
 			public void handle(long now) {
-				if (isPaused) stop();
-
 				shiftCycle.setCurrentTime(now);
-				// Process is done backwards to ensure everything runs once
-				//  e.g. if shifted first, isFirstShift will become false, making delay2Secs
-				//       method run, making isSecondShift true, making the shiftEvery1Sec run,
-				//       shifting the block twice
 
-				// Shift every 1 sec
-				if (isSecondShift && shiftCycle.didTimeExceed(0.05)) {
-					shiftCycle.restartTimer();
-					shiftAction.run();
-				}
+				if (!shiftCycle.isPaused()) {
+					// Process is done backwards to ensure everything runs once
+					//  e.g. if shifted first, isFirstShift will become false, making delay2Secs
+					//       method run, making isSecondShift true, making the shiftEvery1Sec run,
+					//       shifting the block twice
 
-				// Delay 2 secs
-				if (!isFirstShift && shiftCycle.didTimeExceed(0.2)) {
-					shiftCycle.restartTimer();
-					isSecondShift = true;
-				}
+					// Shift every 1 sec
+					if (isSecondShift && shiftCycle.didTimeExceed(0.05)) {
+						shiftCycle.restartTimer();
+						shiftAction.run();
+					}
 
-				// Shift first
-				if (isFirstShift) {
-					isFirstShift = false;
-					shiftCycle.restartTimer();
-					shiftAction.run();
+					// Delay 2 secs
+					if (!isFirstShift && shiftCycle.didTimeExceed(0.2)) {
+						shiftCycle.restartTimer();
+						isSecondShift = true;
+					}
+
+					// Shift first
+					if (isFirstShift) {
+						isFirstShift = false;
+						shiftCycle.restartTimer();
+						shiftAction.run();
+					}
 				}
 			}
 
@@ -197,20 +209,21 @@ public abstract class SPGame {
 	 */
 	private AnimationTimer createOneClickTimer(Runnable action) {
 		CycleManager cycleMgr = new CycleManager();
+		allCyclers.add(cycleMgr);
 		return new AnimationTimer() {
 			boolean isFirstRotation = true;
 
 			@Override
 			public void handle(long now) {
-				if (isPaused) stop();
-
 				cycleMgr.setCurrentTime(now);
 
-				// Rotate first and don't rotate again
-				if (isFirstRotation) {
-					action.run();
-					cycleMgr.restartTimer();
-					isFirstRotation = false;
+				if (!cycleMgr.isPaused()) {
+					// Rotate first and don't rotate again
+					if (isFirstRotation) {
+						action.run();
+						cycleMgr.restartTimer();
+						isFirstRotation = false;
+					}
 				}
 			}
 
@@ -222,10 +235,20 @@ public abstract class SPGame {
 		};
 	}
 
+	private AnimationTimer createRestingBlockTimer() {
+		CycleManager cycleMgr = new CycleManager();
+		allCyclers.add(cycleMgr);
+		return new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+
+			}
+		};
+	}
+
 	private void onBlockFallen() {
 		onBlockLanded();
 		matrix.onBlockFallen();
-		restingBlockCounter = 0;
 		holdUsed = false;
 		blockManager.nextBlock();
 		addBlockToMatrix(blockManager.getCurrentBlock());
@@ -234,10 +257,7 @@ public abstract class SPGame {
 	}
 
 	public void onPressed(KeyCode input) {
-		if (input == KeyCode.P) {
-			isPaused = !isPaused;
-		}
-		if (matrix.doesCurrentBlockExist() && !isPaused) {
+		if (matrix.doesCurrentBlockExist() && !gameCycle.isPaused()) {
 			switch (input) {
 				case DOWN:
 					softDropTimer.start();
@@ -321,11 +341,15 @@ public abstract class SPGame {
 	}
 
 	public void pause() {
-		isPaused = true;
+		for (CycleManager cycleManager : allCyclers) {
+			cycleManager.pause();
+		}
 	}
 
 	public void unpause() {
-		isPaused = false;
+		for (CycleManager cycleManager : allCyclers) {
+			cycleManager.unpause();
+		}
 	}
 
 	public void restart() {

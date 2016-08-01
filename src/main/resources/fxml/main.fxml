@@ -22,7 +22,7 @@
 
     <Rectangle height="30"/>
 
-    <Button text="Online (2P)"
+    <Button text="Sprint (2P Online)"
             styleClass="play-font, font-25"
             prefWidth="400"
             onAction="#showRoomSelection"
