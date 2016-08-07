@@ -4,16 +4,15 @@ import com.wangalangg.tetris.gamemechanics.blocks.Blocks;
 import com.wangalangg.tetris.gamemechanics.gamemodes.GameMode;
 import com.wangalangg.tetris.gamemechanics.matrix.BlockInfo;
 import com.wangalangg.tetris.gamemechanics.matrix.VisualMatrix;
-import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
+import com.wangalangg.tetris.gamemechanics.ui.UIPackage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.socket.client.Socket;
-import javafx.scene.image.ImageView;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
 
 public class MPGame {
 
@@ -23,9 +22,8 @@ public class MPGame {
 	private UIHandler p2UIHandler;
 	private Socket socket;
 
-	public MPGame(GridPane p1Grid, GridPane p2Grid, ImageView holdBlock, ImageLoader imageLoader,
-				  ImageView[] blocks, GameMode gameMode) {
-		spGame = new SPGame(p1Grid, holdBlock, imageLoader, blocks, gameMode) {
+	public MPGame(UIPackage uiPackage, GameMode gameMode) {
+		spGame = new SPGame(uiPackage, gameMode) {
 			@Override
 			public void onBlockMoved() {
 				socket.emit("moveBlock", getMoveBlockDataJson());
@@ -43,7 +41,10 @@ public class MPGame {
 
 			@Override
 			public void onGameOver() {
-				// todo implement
+				// Show game over mask
+				socket.emit("gameOver");
+				uiHandler.gameOver();
+				spGame.pause();
 			}
 		};
 		p2CurrentBlock = new BlockInfo() {
@@ -53,7 +54,7 @@ public class MPGame {
 			}
 		};
 		p2Matrix = new VisualMatrix(p2CurrentBlock);
-		p2UIHandler = new UIHandler(p2Grid, p2Matrix);
+		p2UIHandler = new UIHandler(uiPackage.p2Grid, uiPackage.p2GameOverMask, p2Matrix);
 	}
 
 	public void setSocket(Socket socket) {
@@ -120,6 +121,8 @@ public class MPGame {
 
 			p2Matrix.updateMatrix();
 			p2UIHandler.updateFromSocket();
+		}).on("playerDied", args -> {
+			Platform.runLater(() -> p2UIHandler.gameOver());
 		});
 	}
 }

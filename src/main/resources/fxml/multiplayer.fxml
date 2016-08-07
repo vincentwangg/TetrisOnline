@@ -69,11 +69,22 @@
 
         <Rectangle width="28"/>
 
-        <GridPane fx:id="player1Grid"
-                  hgap="1"
-                  vgap="1"
-                  alignment="center"
-                  gridLinesVisible="true"/>
+        <StackPane>
+
+            <GridPane fx:id="player1Grid"
+                      hgap="1"
+                      vgap="1"
+                      alignment="center"
+                      gridLinesVisible="true"/>
+
+            <ImageView fx:id="p1GameOverMask"
+                       visible="false">
+                <Image url="/screens/mp_game_over_mask.png"
+                       backgroundLoading="true"
+                />
+            </ImageView>
+
+        </StackPane>
 
         <Rectangle width="28"/>
 
@@ -183,11 +194,22 @@
 
         <Rectangle width="50"/>
 
-        <GridPane fx:id="player2Grid"
-                  hgap="1"
-                  vgap="1"
-                  alignment="center"
-                  gridLinesVisible="true"/>
+        <StackPane>
+
+            <GridPane fx:id="player2Grid"
+                      hgap="1"
+                      vgap="1"
+                      alignment="center"
+                      gridLinesVisible="true"/>
+
+            <ImageView fx:id="p2GameOverMask"
+                       visible="false">
+                <Image url="/screens/mp_game_over_mask.png"
+                       backgroundLoading="true"
+                />
+            </ImageView>
+
+        </StackPane>
 
         <Rectangle width="50"/>
     </HBox>

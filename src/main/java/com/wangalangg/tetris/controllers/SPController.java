@@ -3,6 +3,7 @@ package com.wangalangg.tetris.controllers;
 import com.wangalangg.tetris.gamemechanics.SPGame;
 import com.wangalangg.tetris.gamemechanics.gamemodes.Marathon;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
+import com.wangalangg.tetris.gamemechanics.ui.UIPackage;
 import com.wangalangg.tetris.ui.UIManager;
 
 import javafx.event.ActionEvent;
@@ -47,7 +48,7 @@ public class SPController implements Controller {
 				.linesLeft(linesLeftText)
 				.build();
 
-		spGame = new SPGame(tetrisGrid, holdBlock, images, blocks, marathon) {
+		spGame = new SPGame(new UIPackage(tetrisGrid, holdBlock, images, blocks), marathon) {
 			@Override
 			public void onBlockMoved() {
 				// Do nothing since it's singleplayer. Maybe add sound effects later

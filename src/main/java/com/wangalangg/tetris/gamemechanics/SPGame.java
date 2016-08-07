@@ -6,8 +6,8 @@ import com.wangalangg.tetris.gamemechanics.blocks.Blocks;
 import com.wangalangg.tetris.gamemechanics.gamemodes.GameMode;
 import com.wangalangg.tetris.gamemechanics.matrix.BlockInfo;
 import com.wangalangg.tetris.gamemechanics.matrix.Matrix;
-import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
 import com.wangalangg.tetris.gamemechanics.ui.UIHandler;
+import com.wangalangg.tetris.gamemechanics.ui.UIPackage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
 
 /**
  * Responsibilities:
@@ -35,15 +33,14 @@ public abstract class SPGame {
 	private BlockInfo currentBlock;
 	private CycleManager gameCycle;
 	private BlockManager blockManager;
-	private UIHandler uiHandler;
 	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer;
 	private AnimationTimer softDropTimer, hardDropTimer, gameTimer;
 	private RestingBlockTimer restingBlockTimer;
 	private List<CycleManager> allCyclers = new ArrayList<>();
 	private GameMode gameMode;
+	protected UIHandler uiHandler;
 
-	public SPGame(GridPane tetrisGrid, ImageView holdBlockImage, ImageLoader images,
-				  ImageView[] nextBlocksImages, GameMode gameMode) {
+	public SPGame(UIPackage uiPackage, GameMode gameMode) {
 		gameCycle = new CycleManager();
 		allCyclers.add(gameCycle);
 		blockManager = new BlockManager();
@@ -56,8 +53,7 @@ public abstract class SPGame {
 		};
 		this.gameMode = gameMode;
 		matrix = new Matrix(currentBlock, gameCycle, gameMode);
-		uiHandler = new UIHandler(tetrisGrid, holdBlockImage, images, nextBlocksImages,
-				matrix, blockManager, this.gameMode);
+		uiHandler = new UIHandler(uiPackage, matrix, blockManager, this.gameMode);
 
 		softDropTimer = createSoftDropTimer(() -> matrix.handleSoftDrop());
 		hardDropTimer = createOneClickTimer(() -> {

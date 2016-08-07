@@ -171,6 +171,13 @@ io.on('connection', function (socket) {
             socket.broadcast.to(socketID).emit("blockLanded", data);
         });
     });
+
+    socket.on("gameOver", function(data) {
+        players.forEach(function (socketID) {
+            // Emit to room that you died
+            socket.broadcast.to(socketID).emit("playerDied");
+        });
+    });
 });
 
 function getRoomFileName(roomID) {

@@ -3,6 +3,7 @@ package com.wangalangg.tetris.controllers;
 import com.wangalangg.tetris.gamemechanics.MPGame;
 import com.wangalangg.tetris.gamemechanics.gamemodes.Sprint;
 import com.wangalangg.tetris.gamemechanics.ui.ImageLoader;
+import com.wangalangg.tetris.gamemechanics.ui.UIPackage;
 import com.wangalangg.tetris.ui.UIManager;
 
 import org.json.JSONException;
@@ -31,7 +32,7 @@ public class MPController implements Controller, Online {
 	@FXML
 	protected StackPane pauseGroup;
 	@FXML
-	protected ImageView holdBlock, block1, block2, block3, block4, block5;
+	protected ImageView holdBlock, block1, block2, block3, block4, block5, p1GameOverMask, p2GameOverMask;
 	@FXML
 	protected Text linesLeftText, roomIDText, timeLeftText;
 
@@ -41,8 +42,9 @@ public class MPController implements Controller, Online {
 	@FXML
 	public void initialize() {
 		ImageView[] blocks = {block1, block2, block3, block4, block5};
-		mpGame = new MPGame(player1Grid, player2Grid, holdBlock, new ImageLoader(),
-				blocks, new Sprint(linesLeftText));
+		UIPackage uiPackage = new UIPackage(player1Grid, player2Grid, holdBlock,
+				new ImageLoader(), blocks, p1GameOverMask, p2GameOverMask);
+		mpGame = new MPGame(uiPackage, new Sprint(linesLeftText));
 	}
 
 	@Override
