@@ -29,7 +29,8 @@
                 <Text text="Create Room"
                       styleClass="play-font, font-25"
                 />
-                <Button text="Create"
+                <Button fx:id="createButton"
+                        text="Create"
                         styleClass="play-font, font-25"
                         onAction="#createRoom"
                 />
@@ -52,7 +53,8 @@
                            prefWidth="100"
                            styleClass="play-font, font-25"
                 />
-                <Button text="Join"
+                <Button fx:id="joinButton"
+                        text="Join"
                         styleClass="play-font, font-25"
                         onAction="#joinRoom"
                 />

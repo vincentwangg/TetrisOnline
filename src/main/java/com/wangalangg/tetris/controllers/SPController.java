@@ -68,6 +68,7 @@ public class SPController implements Controller {
 				showGameOverScreen();
 			}
 		};
+		spGame.start();
 	}
 
 	@Override

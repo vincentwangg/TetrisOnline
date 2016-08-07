@@ -37,7 +37,7 @@ public abstract class SPGame {
 	private BlockManager blockManager;
 	private UIHandler uiHandler;
 	private AnimationTimer rotateLeftTimer, rotateRightTimer, shiftLeftTimer, shiftRightTimer;
-	private AnimationTimer softDropTimer, hardDropTimer;
+	private AnimationTimer softDropTimer, hardDropTimer, gameTimer;
 	private RestingBlockTimer restingBlockTimer;
 	private List<CycleManager> allCyclers = new ArrayList<>();
 	private GameMode gameMode;
@@ -73,7 +73,7 @@ public abstract class SPGame {
 	}
 
 	private void createGameTimer() {
-		new AnimationTimer() {
+		gameTimer = new AnimationTimer() {
 			private boolean canStepFrame = true;
 			private boolean isFirstCycle = true;
 
@@ -106,7 +106,7 @@ public abstract class SPGame {
 
 				uiHandler.update();
 			}
-		}.start();
+		};
 	}
 
 	private AnimationTimer createSoftDropTimer(Runnable action) {
@@ -324,6 +324,10 @@ public abstract class SPGame {
 		} else {
 			onNewBlock();
 		}
+	}
+
+	public void start() {
+		gameTimer.start();
 	}
 
 	public void pause() {

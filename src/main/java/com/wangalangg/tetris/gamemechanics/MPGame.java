@@ -46,7 +46,6 @@ public class MPGame {
 				// todo implement
 			}
 		};
-		spGame.pause();
 		p2CurrentBlock = new BlockInfo() {
 			@Override
 			public void blockChanged() {
@@ -83,7 +82,7 @@ public class MPGame {
 		socket.on("playerJoinedRoom", args -> {
 
 		}).on("start", args -> {
-			spGame.unpause();
+			spGame.start();
 		}).on("blockMoved", args -> {
 			JSONObject data = (JSONObject) args[0];
 			try {

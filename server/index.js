@@ -3,7 +3,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var jsonfile = require('jsonfile');
 var rooms = [];
-// todo Currently in game variable
+// todo variable to denote room is in game
 
 // Initialize rooms
 for (var i = 0; i < 10; i++) {

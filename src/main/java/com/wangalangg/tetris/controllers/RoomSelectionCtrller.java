@@ -5,7 +5,9 @@ import com.wangalangg.tetris.ui.UIManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -13,6 +15,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
@@ -20,15 +23,21 @@ public class RoomSelectionCtrller implements Controller, Online {
 
 	private UIManager uiManager;
 	private Socket socket;
+	private boolean isServerOnline;
 
 	@FXML
 	private TextField roomNumField;
 	@FXML
 	private Text errorText;
+	@FXML
+	private Button createButton, joinButton;
 
-	public RoomSelectionCtrller() {
-		connectSocket();
-		configSocket();
+	@FXML
+	public void initialize() {
+		// TODO show different screen if server isn't available
+		if (connectSocket()) {
+			configSocket();
+		}
 	}
 
 	@Override
@@ -62,13 +71,32 @@ public class RoomSelectionCtrller implements Controller, Online {
 		socket.emit("joinRoom", data, args -> Platform.runLater(() -> uiManager.showMultiPlayer()));
 	}
 
-	private void connectSocket() {
+	private boolean connectSocket() {
+		isServerOnline = true;
+
 		try {
-			socket = IO.socket("http://localhost:8080");
-			socket.connect();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			URL url = new URL("http://localhost:8080");
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+		} catch (Exception e) {
+			isServerOnline = false;
 		}
+
+		if (isServerOnline) {
+			try {
+				socket = IO.socket("http://localhost:8080");
+				socket.connect();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		} else {
+			joinButton.setDisable(true);
+			createButton.setDisable(true);
+			roomNumField.setDisable(true);
+			errorText.setText("Could not connect to server.");
+		}
+		return isServerOnline;
 	}
 
 	private void configSocket() {
@@ -78,8 +106,10 @@ public class RoomSelectionCtrller implements Controller, Online {
 	}
 
 	public void backToMenu(ActionEvent event) {
-		socket.off();
-		socket.disconnect();
+		if (isServerOnline) {
+			socket.off();
+			socket.disconnect();
+		}
 		uiManager.showMainMenu();
 	}
 }
