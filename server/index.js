@@ -3,6 +3,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var jsonfile = require('jsonfile');
 var rooms = [];
+var port = process.env.PORT || 8080;
 // todo variable to denote room is in game
 
 // Initialize rooms
@@ -11,8 +12,8 @@ for (var i = 0; i < 10; i++) {
 }
 
 // Server start
-server.listen(8080, function () {
-    console.log("Server is now running...");
+server.listen(port, function () {
+    console.log("Server is now running on port " + port);
 });
 
 // Individual player connection
@@ -20,6 +21,8 @@ io.on('connection', function (socket) {
     var roomID = -1;
     var players = [];
     var isInRoom = false;
+    var isRoomHost;
+    var roomTimer;
 
     /*******************************************/
     /************   CONNECTION   ***************/
@@ -78,6 +81,7 @@ io.on('connection', function (socket) {
         roomID = roomNum;
         players.push(socket.id);
         isInRoom = true;
+        isRoomHost = true;
 
         console.log("Someone created and joined room " + roomID);
     });
@@ -107,6 +111,7 @@ io.on('connection', function (socket) {
                     roomID = data.roomID;
                     players = roomData.players;
                     isInRoom = true;
+                    isRoomHost = false;
 
                     console.log("Someone joined room " + roomID);
 
@@ -133,11 +138,32 @@ io.on('connection', function (socket) {
             // Start game if both players have successfully connected
             if (roomData.ready == 2) {
                 setTimeout(function () {
-                    roomData.players.forEach(function (socketID) {
+                    players.forEach(function (socketID) {
                         // Emit block position to other player
                         socket.broadcast.to(socketID).emit("start");
                     });
                     socket.emit("start");
+
+                    // Start room timer if you are room host
+                    console.log(isRoomHost);
+                    // TODO GET THE ROOM HOST TO START THE TIMER
+                    if (isRoomHost) {
+                        var time = 120;
+                        roomTimer = setInterval(function () {
+                            // After 2 minutes, stop emitting and clearInterval
+                            console.log(time);
+                            if (time >= 0) {
+                                // TODO LEFT OFF TIMECHANGED NOT WORKING
+                                players.forEach(function (socketID) {
+                                    socket.broadcast.to(socketID).emit("timeChanged", { time : time });
+                                });
+                                socket.emit("timeChanged", { time : time });
+                                time--;
+                            } else {
+                                clearInterval(roomTimer);
+                            }
+                        }, 1000);
+                    }
                 }, 3000);
             }
         });
