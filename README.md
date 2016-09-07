@@ -1,5 +1,5 @@
-# TetrisMP
-Tetris with multiplayer. Continuation of the previous Tetris project.
+# Tetris Online
+My cloned Tetris game with multiplayer!
 
 # Download
 Here's a download for the game.
