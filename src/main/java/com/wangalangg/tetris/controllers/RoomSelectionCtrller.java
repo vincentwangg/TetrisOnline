@@ -21,6 +21,8 @@ import javafx.scene.text.Text;
 
 public class RoomSelectionCtrller implements Controller, Online {
 
+	private static final String ACTUAL_SERVER = "https://wangalangg-tetris-server.herokuapp.com/";
+	private static final String TEST_SERVER = "http://localhost:8080";
 	private UIManager uiManager;
 	private Socket socket;
 	private boolean isServerOnline;
@@ -75,7 +77,7 @@ public class RoomSelectionCtrller implements Controller, Online {
 		isServerOnline = true;
 
 		try {
-			URL url = new URL("http://localhost:8080");
+			URL url = new URL(ACTUAL_SERVER);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.connect();
@@ -85,7 +87,7 @@ public class RoomSelectionCtrller implements Controller, Online {
 
 		if (isServerOnline) {
 			try {
-				socket = IO.socket("http://localhost:8080");
+				socket = IO.socket(ACTUAL_SERVER);
 				socket.connect();
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
@@ -100,8 +102,7 @@ public class RoomSelectionCtrller implements Controller, Online {
 	}
 
 	private void configSocket() {
-		socket.on("playerJoinedRoom", args -> socket.emit("playerJoinedRoom", (JSONObject) args[0]))
-				.on("roomFull", args -> Platform.runLater(() -> errorText.setText("Couldn't join room because it was full.")))
+		socket.on("roomFull", args -> Platform.runLater(() -> errorText.setText("Couldn't join room because it was full.")))
 				.on("roomNull", args -> Platform.runLater(() -> errorText.setText("Room doesn't exist.")));
 	}
 

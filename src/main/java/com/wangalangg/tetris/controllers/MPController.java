@@ -34,7 +34,7 @@ public class MPController implements Controller, Online {
 	@FXML
 	protected ImageView holdBlock, block1, block2, block3, block4, block5, p1GameOverMask, p2GameOverMask;
 	@FXML
-	protected Text linesLeftText, roomIDText, timeLeftText;
+	protected Text linesLeftText, roomIDText;
 
 	public MPController() {
 	}

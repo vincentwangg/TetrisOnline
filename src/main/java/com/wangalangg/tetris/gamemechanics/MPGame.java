@@ -80,11 +80,7 @@ public class MPGame {
 	}
 
 	private void configSocket() {
-		socket.on("playerJoinedRoom", args -> {
-
-		}).on("start", args -> {
-			spGame.start();
-		}).on("blockMoved", args -> {
+		socket.on("start", args -> spGame.start()).on("blockMoved", args -> {
 			JSONObject data = (JSONObject) args[0];
 			try {
 				p2CurrentBlock.moveTo(data.getInt("row"), data.getInt("col"));

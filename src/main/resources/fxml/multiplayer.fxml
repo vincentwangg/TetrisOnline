@@ -167,20 +167,6 @@
                           text="Loading..."
                           styleClass="play-font, font-25"
                     />
-                    <Rectangle height="20"/>
-                    <Text text="Time left"
-                          styleClass="play-font, font-25"
-                    />
-                    <Rectangle width="100"
-                               height="3"
-                               arcWidth="1"
-                               arcHeight="1"
-                               fill="darkgray"
-                    />
-                    <Text fx:id="timeLeftText"
-                          text="Loading..."
-                          styleClass="play-font, font-25"
-                    />
                 </VBox>
                 <VBox alignment="TOP_CENTER">
                     <Rectangle height="110"/>

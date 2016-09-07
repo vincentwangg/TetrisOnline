@@ -18,7 +18,8 @@ public class UIPackage {
 
 	// 2P - Main Player UI package
 	public UIPackage(GridPane p1Grid, GridPane p2Grid, ImageView holdBlock, ImageLoader images,
-					 ImageView[] nextBlocksImages, ImageView p1GameOverMask, ImageView p2GameOverMask) {
+					 ImageView[] nextBlocksImages, ImageView p1GameOverMask,
+					 ImageView p2GameOverMask) {
 		this.p1Grid = p1Grid;
 		this.p2Grid = p2Grid;
 		this.images = images;
